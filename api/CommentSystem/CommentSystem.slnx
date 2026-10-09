@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="../../../../../../../../Coding/CommentSystem/api/CommentSystem/src/CommentSystem.Application/CommentSystem.Application.csproj" />
+  <Project Path="../../../../../../../../Coding/CommentSystem/api/CommentSystem/src/CommentSystem.Domain/CommentSystem.Domain.csproj" />
+  <Project Path="../../../../../../../../Coding/CommentSystem/api/CommentSystem/src/CommentSystem.Infrastructure/CommentSystem.Infrastructure.csproj" />
+  <Project Path="../../../../../../../../Coding/CommentSystem/api/CommentSystem/src/CommentSystem.WebApi/CommentSystem.WebApi.csproj" />
+</Solution>
