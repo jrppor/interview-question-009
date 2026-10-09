@@ -1,0 +1,36 @@
+@if (initial.isLoading() || sending()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+@if (post(); as post) {
+  <section class="post">
+    <app-post-header [author]="post.author" [createdAt]="post.createdAt" />
+
+    <img class="photo" [src]="post.imageUrl" [alt]="'Photo posted by ' + post.author.displayName" />
+
+    @if (post.caption) {
+      <p class="caption">{{ post.caption }}</p>
+    }
+
+    @if (currentUser(); as user) {
+      <app-comment-input
+        [user]="user"
+        [sending]="sending()"
+        [(text)]="draft"
+        (submitted)="addComment($event)"
+      />
+    }
+
+    <app-comment-list
+      [comments]="comments()"
+      [hasMore]="nextCursor() !== null"
+      [loadingMore]="loadingMore()"
+      (loadMore)="loadMore()"
+    />
+  </section>
+} @else if (initial.error()) {
+  <section class="state">
+    <p>Could not load this post.</p>
+    <button mat-stroked-button type="button" (click)="initial.reload()">Retry</button>
+  </section>
+}

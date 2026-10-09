@@ -1,0 +1,14 @@
+:host {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.name {
+  font: var(--mat-sys-title-small);
+}
+
+.date {
+  font: var(--mat-sys-label-small);
+  color: var(--mat-sys-on-surface-variant);
+}

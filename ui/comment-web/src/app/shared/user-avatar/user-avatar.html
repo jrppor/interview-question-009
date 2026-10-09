@@ -1,0 +1,7 @@
+<span class="avatar" [style.--size]="size()" [style.--hue]="hue()" aria-hidden="true">
+  @if (url(); as src) {
+    <img [src]="src" alt="" />
+  } @else {
+    {{ initial() }}
+  }
+</span>

@@ -1,0 +1,5 @@
+<app-user-avatar [name]="author().displayName" [url]="author().avatarUrl" />
+<div class="meta">
+  <div class="name">{{ author().displayName }}</div>
+  <time class="date" [attr.datetime]="createdAt()">{{ createdAt() | date: 'd MMM y, HH:mm' }}</time>
+</div>

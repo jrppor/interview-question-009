@@ -1,0 +1,20 @@
+@for (comment of comments(); track comment.commentId) {
+  <article class="comment">
+    <app-user-avatar [name]="comment.user.displayName" [url]="comment.user.avatarUrl" [size]="36" />
+    <div class="body">
+      <div class="bubble">
+        <div class="name">{{ comment.user.displayName }}</div>
+        <p class="content">{{ comment.content }}</p>
+      </div>
+      <time class="time" [attr.datetime]="comment.createdAt">{{ comment.createdAt | timeAgo }}</time>
+    </div>
+  </article>
+} @empty {
+  <p class="empty">Be the first to comment</p>
+}
+
+@if (hasMore()) {
+  <button mat-button type="button" [disabled]="loadingMore()" (click)="loadMore.emit()">
+    Show older comments
+  </button>
+}

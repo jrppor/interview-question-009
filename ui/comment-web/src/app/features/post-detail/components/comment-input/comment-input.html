@@ -1,0 +1,26 @@
+<app-user-avatar [name]="user().displayName" [url]="user().avatarUrl" [size]="36" />
+<mat-form-field appearance="outline" subscriptSizing="dynamic">
+  <input
+    matInput
+    placeholder="Write a comment..."
+    [attr.aria-label]="'Comment as ' + user().displayName"
+    autocomplete="off"
+    [maxlength]="maxLength"
+    [readonly]="sending()"
+    [ngModel]="text()"
+    (ngModelChange)="text.set($event)"
+    (keydown.enter)="onEnter($event)"
+  />
+  <button
+    mat-icon-button
+    matSuffix
+    type="button"
+    aria-label="Send comment"
+    [disabled]="sending() || !text().trim()"
+    (click)="send()"
+  >
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true">
+      <path d="M3 20v-6l8-2-8-2V4l19 8z" />
+    </svg>
+  </button>
+</mat-form-field>
