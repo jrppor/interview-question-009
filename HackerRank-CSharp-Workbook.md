@@ -1,16 +1,28 @@
-# เตรียม HackerRank และสัมภาษณ์ Backend ด้วย C# · โจทย์พื้นฐาน 8 ข้อ โจทย์พร้อมเฉลย 34 ข้อ โจทย์เสริม 4 ข้อ และคำถามตัวเลือก
+# เตรียม HackerRank ด้วย C# · Problem Solving, REST API, AI Prompt Engineering และคำถามตัวเลือก
 
 <a id="contents"></a>
 
-**เจอโจทย์แล้วอยากหาวิธีทำทันที** เปิด[ตารางหาเร็ว](#find) ด้านล่างก่อน **ถ้าอ่านครั้งแรก** เริ่มที่ภาค 0 และภาค 1 แล้วต่อด้วยโจทย์ผสมในภาค 3 เมื่อเขียน Coding, API และ SQL ได้เอง ถ้าเปิดเพื่อหาคำสั่งใดคำสั่งหนึ่ง ให้ข้ามไป [ชีตคำสั่ง C#](#commands) หรือ [ดัชนีคำในโจทย์](#index) ได้ทันที
+**ข้อสอบชุดนี้มี 4 ส่วน** ดู[แผนที่ข้อสอบ](#exam) ด้านล่างว่าแต่ละส่วนอ่านตรงไหน **เจอโจทย์แล้วอยากหาวิธีทำทันที** เปิด[ตารางหาเร็ว](#find) **ถ้าอ่านครั้งแรก** เริ่มที่ภาค 0 และภาค 1 แล้วต่อด้วยโจทย์ผสมในภาค 3 เมื่อเขียน Coding, API และ SQL ได้เอง ถ้าเปิดเพื่อหาคำสั่งใดคำสั่งหนึ่ง ให้ข้ามไป [ชีตคำสั่ง C#](#commands) หรือ [ดัชนีคำในโจทย์](#index) ได้ทันที
 
 | ลำดับ | เนื้อหา |
 |---|---|
-| 0 · เริ่มตรงนี้ | [หาเร็ว: โจทย์แบบนี้ใช้คำสั่งอะไร](#find) → [โจทย์พื้นฐาน พ1–พ8](#basics) → [คำถามตัวเลือก](#mcq) |
+| 0 · เริ่มตรงนี้ | [ข้อสอบ 4 ส่วน อ่านตรงไหน](#exam) → [หาเร็ว](#find) → [โจทย์พื้นฐาน พ1–พ8](#basics) → [แม่แบบ REST API](#rest-template) → [AI Prompt Engineering](#ai) → [คำถามตัวเลือก](#mcq) |
 | 1 · พื้นฐานที่ใช้สอบ | [Coding และ LINQ](#coding) → [REST API](#api) → [SQL](#sql) มีโจทย์ฝึกและเฉลยอยู่กับบทที่ใช้ |
 | 2 · หัวข้อต่อยอด | [Algorithms](#algorithms) → [Data Structures](#structures) → [System Design](#design) → [Flowchart](#flowchart) เลือกตามหัวข้อที่อยากฝึก |
 | 3 · โจทย์ผสม | [โจทย์ 31–34 พร้อมเฉลย](#mixed) → [ตรวจสาเหตุเมื่อผ่านเพียงบางเคส](#hidden) |
 | 4 · เปิดทวน | [คำสั่ง Coding](#commands) · [LINQ](#linq-ref) · [LINQ ในงาน Backend](#linq-dev) · [เลือกคำสั่งเมื่อเจอโจทย์ใหม่](#unseen) · [HTTP และ JSON](#api-ref) · [ศัพท์อังกฤษและดัชนี](#index) |
+
+<a id="exam"></a>
+
+### ข้อสอบจริงมี 4 ส่วน · อ่านตามนี้
+
+| ส่วนในข้อสอบ | อ่านตรงนี้ก่อน | อ่านเพิ่มถ้ามีเวลา |
+|---|---|---|
+| 1 · Problem Solving (Basic) | [หาเร็ว](#find) → [พ1–พ8](#basics) | [ข้อ 1–9](#coding) · [ข้อ 23–24](#q23) · [ข้อ 31–32](#q31) |
+| 2 · REST API (Intermediate) | [แม่แบบ REST API](#rest-template) | [ข้อ 10–13](#api) · [ข้อ 33](#q33) · [ตาราง HTTP และ JSON](#api-ref) |
+| 3 · AI Prompts Engineering | [AI Prompt Engineering](#ai) | — |
+| 4 · Multiple choices | [คำถามตัวเลือก](#mcq) | [ความรู้ AI แบบตัวเลือก](#ai-mcq) |
+| ไม่อยู่ในข้อสอบชุดนี้ | ข้ามได้: SQL ข้อ 14–18, เสริม B, ข้อ 34 · System Design ข้อ 27–30 · Flowchart | — |
 
 <a id="find"></a>
 
@@ -28,6 +40,8 @@
 | นับสระหรือนับตัวอักษร (vowels, count characters) | `s.ToLower().Count(c => "aeiou".Contains(c))` | [พ6](#b6) |
 | ผลรวมของแต่ละหลัก (sum of digits) | `n % 10` แล้ว `n /= 10` | [พ7](#b7) |
 | ค่ามากสุด น้อยสุด อันดับสอง (max, min, second largest) | `Max()`, `Min()`, `Distinct().OrderByDescending(x => x)` | [พ8](#b8) |
+| เรียก API ทุกหน้าแล้วนับ รวม หรือหาค่าสูงสุด (REST API, jsonmock) | วาง `FetchAll(url)` แล้วใช้ `.Count`, `.Sum`, `.OrderByDescending` | [แม่แบบ REST API](#rest-template) |
+| ให้เขียน prompt · ถามศัพท์ AI (prompt, few-shot, temperature, hallucination) | โครง Role / Task / Context / Input / Rules / Output format / Example | [AI Prompt Engineering](#ai) · [ศัพท์ AI](#ai-mcq) |
 | คำถามตัวเลือก: เรียงแบบไหนเร็วสุด · Big-O · SQL · HTTP | ตารางความเร็วและคำตอบที่ออกบ่อย | [คำถามตัวเลือก](#mcq) |
 | อ่านค่าเองจาก input แล้วพิมพ์ผล (Console) | `Console.ReadLine()`, `int.Parse`, `Console.WriteLine` | [พ2](#b2) · [อ่าน input](#commands) |
 | ผลรวมใหญ่เกิน int (sum, overflow) | `long`, `a.Sum(x => (long)x)` | [ข้อ 2](#q2) |
@@ -327,6 +341,239 @@ public static int SecondLargest(List<int> a)
 
 [กลับสารบัญ](#contents)
 
+<a id="rest-template"></a>
+
+### แม่แบบ REST API · วางแล้วแก้แค่ URL กับเงื่อนไข
+
+**ข้อ REST API ของ HackerRank มักหน้าตาแบบนี้** โจทย์ให้ URL ของ API จำลอง (มักขึ้นต้นด้วย `https://jsonmock.hackerrank.com/api/`) แล้วให้นับ รวม หรือหาค่าสูงสุดจาก **ทุกหน้า** ผลที่ API ส่งกลับมาเป็นหน้า ๆ แบบนี้
+
+```json
+{"page":1,"per_page":10,"total":24,"total_pages":3,"data":[{"name":"Mali","city":"Bangkok","rating":4.8}]}
+```
+
+- `data` คือรายการของหน้านี้ · `total_pages` คือจำนวนหน้าทั้งหมด · `total` คือจำนวนรายการทั้งหมด
+- ขั้นตอนเหมือนกันทุกข้อ: ประกอบ URL → GET หน้า 1 → อ่าน `total_pages` → วน `data` → เพิ่มเลขหน้าจนครบ → คืนผล
+
+**ขั้นที่ 1 · วางตัวช่วยนี้ไว้ในคลาสเดียวกับคำตอบ** ใส่ `using System.Net.Http;` และ `using System.Text.Json;` ที่หัวไฟล์ด้วย
+
+```csharp
+// ดึงทุกหน้าของ url แล้วคืนทุกรายการใน data รวมกันเป็นลิสต์เดียว
+public static List<JsonElement> FetchAll(string url)
+{
+    using var client = new HttpClient();
+    var items = new List<JsonElement>();
+    // ถ้า url มี ? อยู่แล้วให้ต่อด้วย & ถ้ายังไม่มีให้ต่อด้วย ?
+    string sep = url.Contains('?') ? "&" : "?";
+    int page = 1, totalPages;
+    do
+    {
+        // GET แบบรอผล ใช้ได้ในเมธอดธรรมดาที่ไม่ใช่ async
+        string json = client.GetStringAsync($"{url}{sep}page={page}").GetAwaiter().GetResult();
+        using var doc = JsonDocument.Parse(json);
+        // อ่านจำนวนหน้าทั้งหมดจากทุกหน้า (หน้าแรกก็มี)
+        totalPages = doc.RootElement.GetProperty("total_pages").GetInt32();
+        foreach (var item in doc.RootElement.GetProperty("data").EnumerateArray())
+            // Clone เพื่อให้ใช้ item ต่อได้หลังปิด doc
+            items.Add(item.Clone());
+        page++;
+    } while (page <= totalPages);
+    return items;
+}
+```
+
+**ขั้นที่ 2 · เขียนเมธอดที่โจทย์ให้** แก้ URL ให้ตรงโจทย์ แล้วเลือกบรรทัดคำนวณจากตัวอย่างด้านล่าง
+
+```csharp
+// ตัวอย่าง: นับร้านในเมืองที่กำหนด (ชื่อเมธอดและ URL ให้ใช้ตามโจทย์)
+public static int countShops(string city)
+{
+    // เข้ารหัสค่าที่ใส่ใน URL เสมอ เช่น "New York" -> "New%20York"
+    string url = "https://jsonmock.hackerrank.com/api/<ชื่อจากโจทย์>?city=" + Uri.EscapeDataString(city);
+    return FetchAll(url).Count;
+}
+
+// ตัวอย่างบรรทัดคำนวณที่ใช้บ่อย เลือกใช้ตามที่โจทย์ถาม
+public static string ExampleQueries(List<JsonElement> items, string city)
+{
+    // นับรายการที่ตรงเงื่อนไข
+    int count = items.Count(i => i.GetProperty("city").GetString() == city);
+    // รวมค่าตัวเลข
+    double total = items.Sum(i => i.GetProperty("rating").GetDouble());
+    // หาชื่อที่คะแนนสูงสุด ถ้าเสมอเอาชื่อที่มาก่อนตามตัวอักษร ไม่มีเลยคืน ""
+    string best = items.OrderByDescending(i => i.GetProperty("rating").GetDouble())
+                       .ThenBy(i => i.GetProperty("name").GetString(), StringComparer.Ordinal)
+                       .Select(i => i.GetProperty("name").GetString()!)
+                       .FirstOrDefault() ?? "";
+    // รายชื่อทั้งหมดเรียงตามตัวอักษร
+    List<string> names = items.Select(i => i.GetProperty("name").GetString()!)
+                              .OrderBy(n => n, StringComparer.Ordinal)
+                              .ToList();
+    return $"{count} {total} {best} {names.Count}";
+}
+```
+
+**อ่านค่าจาก JSON แต่ละแบบ**
+
+| ต้องการ | เขียน |
+|---|---|
+| ข้อความ | `item.GetProperty("name").GetString()` |
+| เลขจำนวนเต็ม | `item.GetProperty("id").GetInt32()` |
+| เลขทศนิยม | `item.GetProperty("rating").GetDouble()` |
+| ฟิลด์ซ้อนในฟิลด์ | `item.GetProperty("user_rating").GetProperty("average_rating").GetDouble()` |
+| ตัวเลขที่ส่งมาเป็นข้อความ เช่น `"3"` | `int.Parse(item.GetProperty("goals").GetString()!)` |
+| ฟิลด์ที่อาจไม่มี | `if (item.TryGetProperty("review", out var review)) { ... }` |
+| ไม่แน่ใจว่าเป็นเลขหรือข้อความ | ดู `x.ValueKind == JsonValueKind.Number` หรือ `JsonValueKind.String` ก่อนอ่าน |
+| ค่าอาจเป็น `null` | `x.ValueKind == JsonValueKind.Null` |
+
+**จุดที่มักพลาด**
+
+- **อ่านแค่หน้าเดียว:** ต้องวนจนถึง `total_pages` ใช้ `<=` ไม่ใช่ `<`
+- **ใช้ `total` แทนจำนวนที่ผ่านเงื่อนไข:** `total` คือจำนวนทั้งหมดก่อนกรอง
+- **ไม่เข้ารหัสค่าใน URL:** ชื่อที่มีช่องว่างหรือ `&` ต้องผ่าน `Uri.EscapeDataString`
+- **ฟิลด์ตัวเลขเป็นข้อความ:** `GetInt32()` กับค่า `"3"` จะเกิด exception ให้เช็ก `ValueKind` แล้วใช้ `int.Parse`
+- **ไม่เจอเลยต้องคืนอะไร:** อ่านโจทย์ว่าให้คืน `0`, `""`, `-1` หรือ `"NONE"`
+- **โครงข้อสอบเป็น async (`Task<int>`):** ใช้ `await client.GetStringAsync(...)` แทน `.GetAwaiter().GetResult()` ดูตัวอย่างเต็มใน[ข้อ 11](#q11) และ[ข้อ 33](#q33)
+
+[กลับสารบัญ](#contents)
+
+<a id="ai"></a>
+
+### AI Prompt Engineering · เขียนคำสั่งให้ AI ตอบได้ตรงงาน
+
+ส่วนนี้อาจออกได้สองแบบ คือ **ตัวเลือกถามความรู้** ([ตารางศัพท์ด้านล่าง](#ai-mcq)) หรือ **ให้เขียน prompt เอง** แล้วตรวจจากความชัดเจนและผลที่ได้ เตรียมไว้ทั้งสองแบบ
+
+#### โครง prompt ที่ใช้ได้เกือบทุกงาน
+
+ถ้าโจทย์ให้เขียน prompt ให้ไล่ครบหกช่องนี้ ข้อสอบเป็นภาษาอังกฤษ จึงเขียนเป็นภาษาอังกฤษไว้ให้คัดไปใช้
+
+```text
+Role: You are a [บทบาท เช่น senior customer support agent].
+Task: [สิ่งที่ต้องทำ เป็นคำกริยาชัด ๆ เช่น Extract / Classify / Summarize / Write].
+Context: [ข้อมูลพื้นหลังที่ AI ต้องรู้ ผู้อ่านคือใคร ใช้ทำอะไร]
+Input:
+<input>
+[ข้อมูลที่ให้ AI ทำงาน]
+</input>
+Rules:
+- [ข้อกำหนด เช่น ความยาว ภาษา น้ำเสียง สิ่งที่ห้ามทำ]
+- If the information is not in the input, answer "unknown". Do not guess.
+Output format: [รูปแบบผลลัพธ์ เช่น JSON ที่มี key อะไรบ้าง หรือรายการ 3 ข้อ]
+Example:
+Input: [ตัวอย่างข้อมูล] -> Output: [ตัวอย่างผลที่ต้องการ]
+```
+
+**ตรวจ prompt ก่อนส่ง 7 ข้อ**
+
+1. **งานชัด:** มีคำกริยาบอกสิ่งที่ต้องทำหนึ่งอย่าง
+2. **บริบทพอ:** บอกว่าใครใช้ผล และใช้ทำอะไร
+3. **แยกข้อมูลออกจากคำสั่ง:** ครอบข้อมูลด้วย `<input>...</input>` หรือ `"""`
+4. **กำหนดรูปแบบผล:** เช่น JSON พร้อมชื่อ key
+5. **มีตัวอย่าง:** 1–3 คู่ input → output ถ้ารูปแบบผลสำคัญ
+6. **บอกทางออกเมื่อข้อมูลไม่พอ:** ให้ตอบ `unknown` แทนการเดา
+7. **ข้อจำกัด:** ความยาว ภาษา น้ำเสียง สิ่งที่ห้าม
+
+#### ตัวอย่าง 1 · ดึงข้อมูลจากอีเมลเป็น JSON
+
+**โจทย์** “Write a prompt that extracts the customer name, order number and issue from a support email.”
+
+**prompt ที่อ่อน** `Get the info from this email.` ไม่บอกว่าต้องการฟิลด์ไหน รูปแบบไหน และถ้าไม่มีข้อมูลให้ทำอย่างไร
+
+**prompt ที่ดี**
+
+```text
+You are a support assistant. Extract information from the customer email below.
+
+<email>
+{email_text}
+</email>
+
+Return only valid JSON with exactly these keys:
+{"customer_name": string, "order_number": string, "issue": string}
+
+Rules:
+- "issue" is one sentence of at most 20 words.
+- If a value is not in the email, use null. Do not invent values.
+```
+
+#### ตัวอย่าง 2 · จัดกลุ่มข้อความด้วยตัวอย่าง (few-shot)
+
+**โจทย์** “Classify each review as Positive, Negative or Neutral.”
+
+```text
+Classify the sentiment of the review as exactly one word: Positive, Negative or Neutral.
+
+Review: "Fast delivery and great quality." -> Positive
+Review: "The box arrived broken." -> Negative
+Review: "It is a phone case." -> Neutral
+
+Review: "{review_text}" ->
+```
+
+**ทำไมใช้ได้:** ตัวอย่างสามคู่บอกทั้งความหมายของแต่ละกลุ่ม และรูปแบบคำตอบเป็นคำเดียว
+
+#### ตัวอย่าง 3 · ให้ AI เขียนโค้ด
+
+**โจทย์** “Write a prompt that asks an AI to write a C# function.”
+
+```text
+Write a C# method with this exact signature:
+public static List<int> OddNumbers(int l, int r)
+
+Requirements:
+- Return all odd numbers from l to r inclusive, in ascending order.
+- l and r can be negative. If l > r, swap them.
+- Use only System and System.Collections.Generic.
+
+Return only the code, no explanation.
+Then list 3 test cases as: input -> expected output.
+```
+
+**ทำไมใช้ได้:** บอก signature ตรงตัว บอกกรณีขอบ (เลขลบ, l > r) จำกัด library และกำหนดว่าต้องส่งอะไรกลับมา
+
+#### ตัวอย่าง 4 · ให้คิดทีละขั้น (chain-of-thought)
+
+```text
+A shop sells pens at 12 baht each. Buy 5 or more and get 10% off the total.
+How much do 7 pens cost?
+Think step by step, then give the final answer on the last line as: Answer: <number>
+```
+
+**ทำไมใช้ได้:** โจทย์คำนวณหลายขั้นตอบถูกบ่อยขึ้นเมื่อให้แสดงขั้นตอน และบรรทัดสุดท้ายแยกคำตอบให้อ่านง่าย (คำตอบคือ 75.6)
+
+<a id="ai-mcq"></a>
+
+#### ศัพท์และคำถามตัวเลือกเรื่อง AI
+
+| ถ้าถามว่า | ตอบ |
+|---|---|
+| Prompt คืออะไร | ข้อความคำสั่งและข้อมูลที่ส่งให้โมเดลเพื่อให้ได้ผลที่ต้องการ |
+| Zero-shot prompting | สั่งงานโดยไม่ให้ตัวอย่าง |
+| One-shot / Few-shot prompting | ให้ตัวอย่าง input → output 1 คู่ / หลายคู่ก่อนงานจริง เพื่อให้ตอบตามรูปแบบ |
+| Chain-of-thought (CoT) | ให้โมเดลคิดหรือแสดงเหตุผลทีละขั้นก่อนตอบ ช่วยโจทย์คำนวณและตรรกะหลายขั้น |
+| Role / persona prompting | กำหนดบทบาท เช่น “You are a senior C# developer” เพื่อคุมน้ำเสียงและมุมมอง |
+| System prompt ต่างจาก user prompt อย่างไร | system prompt ตั้งกติกาและบทบาทใช้ตลอดบทสนทนา · user prompt คือคำขอแต่ละครั้ง |
+| Temperature | ต่ำ (เช่น 0–0.3) ผลคงที่ ตรงประเด็น เหมาะกับงานข้อเท็จจริงและโค้ด · สูง (เช่น 0.7–1) หลากหลาย เหมาะกับงานสร้างสรรค์ |
+| Top-p | สุ่มเลือกคำจากกลุ่มคำที่ความน่าจะเป็นรวมกันถึง p ค่าต่ำทำให้ผลแคบลง |
+| Max tokens | จำกัดความยาวสูงสุดของคำตอบ |
+| Token | หน่วยย่อยของข้อความที่โมเดลอ่าน (ประมาณชิ้นส่วนของคำ) ใช้นับความยาวและค่าใช้จ่าย |
+| Context window | จำนวน token สูงสุดที่โมเดลรับได้ในครั้งเดียว รวมทั้ง prompt และคำตอบ |
+| Hallucination | โมเดลแต่งข้อมูลที่ฟังดูจริงแต่ผิด · ลดได้ด้วยการแนบข้อมูลอ้างอิง สั่งให้ตอบ “unknown” เมื่อไม่มีข้อมูล และขอให้อ้างแหล่ง |
+| RAG (Retrieval-Augmented Generation) | ค้นเอกสารที่เกี่ยวข้องก่อน แล้วแนบเข้า prompt ให้โมเดลตอบจากเอกสารนั้น |
+| Embedding | เวกเตอร์ตัวเลขแทนความหมายของข้อความ ใช้ค้นข้อความที่ความหมายคล้ายกัน |
+| Fine-tuning ต่างจาก prompting อย่างไร | fine-tuning ฝึกโมเดลเพิ่มด้วยข้อมูลชุดใหม่ (โมเดลเปลี่ยน) · prompting ปรับแค่ข้อความที่ส่ง (โมเดลไม่เปลี่ยน) |
+| Prompt injection | ข้อความในข้อมูลหรือจากผู้ใช้พยายามสั่งให้โมเดลทิ้งกติกาเดิม · ป้องกันด้วยการแยกข้อมูลด้วยตัวคั่น บอกว่าข้อความในตัวคั่นเป็นข้อมูลไม่ใช่คำสั่ง ตรวจผลก่อนใช้ และจำกัดสิทธิ์ของเครื่องมือ |
+| Delimiter | ตัวคั่นอย่าง `"""`, `###` หรือ `<input></input>` ที่แยกคำสั่งออกจากข้อมูล |
+| Structured output | สั่งให้ตอบเป็นรูปแบบที่โปรแกรมอ่านต่อได้ เช่น JSON ตาม key ที่กำหนด |
+| Prompt chaining | แบ่งงานใหญ่เป็นหลาย prompt ต่อกัน ผลของขั้นแรกเป็น input ของขั้นถัดไป |
+| Self-consistency | ให้ตอบหลายครั้งแล้วเลือกคำตอบที่ซ้ำกันมากที่สุด |
+| Iterative refinement | ลองรัน ดูผล แล้วปรับ prompt ทีละจุดจนได้ผลตามต้องการ |
+| prompt ไหนดีกว่า (ข้อตัวเลือก) | เลือกตัวที่ **เจาะจงกว่า** มีบริบท ข้อจำกัด รูปแบบผล และตัวอย่าง มากกว่าตัวที่สั้นและกว้าง |
+| ลดคำตอบยาวเกินไป | กำหนดความยาวเป็นตัวเลข เช่น “at most 50 words” หรือ “3 bullet points” |
+| ให้ผลเหมือนเดิมทุกครั้ง | ลด temperature และกำหนดรูปแบบผลให้ชัด |
+| ข้อมูลส่วนตัวหรือความลับใน prompt | ไม่ใส่ข้อมูลลับหรือข้อมูลส่วนตัวที่ไม่จำเป็น และปิดบังก่อนส่ง |
+
+[กลับสารบัญ](#contents)
+
 <a id="mcq"></a>
 
 ### คำถามตัวเลือก · ทฤษฎีที่ออกบ่อย
@@ -394,6 +641,19 @@ public static int SecondLargest(List<int> a)
 | HTTP method ไหนใช้ทำอะไร | GET อ่าน · POST สร้าง · PUT แทนทั้งก้อน · PATCH แก้บางส่วน · DELETE ลบ |
 | method ไหน idempotent (เรียกซ้ำผลเหมือนเดิม) | GET, PUT, DELETE · POST ไม่ใช่ |
 | HTTP status code | 200 OK · 201 Created · 204 No Content · 400 Bad Request · 401 ยังไม่ยืนยันตัวตน · 403 ไม่มีสิทธิ์ · 404 ไม่พบ · 409 Conflict · 500 Server Error |
+| Encapsulation | ซ่อนข้อมูลภายในคลาส (`private`) ให้เข้าถึงผ่านเมธอดหรือ property |
+| Inheritance | คลาสลูกได้สมาชิกจากคลาสแม่ เช่น `class Dog : Animal` |
+| Polymorphism | เรียกเมธอดชื่อเดียวกันแต่ทำงานต่างกันตามชนิดจริงของ object (`virtual` / `override`) |
+| Abstraction | แสดงเฉพาะสิ่งที่จำเป็น ซ่อนรายละเอียด (`abstract class`, `interface`) |
+| interface กับ abstract class | คลาสหนึ่ง implement ได้หลาย interface แต่สืบทอดคลาสได้ตัวเดียว · abstract class มี field และ constructor ได้ |
+| Overloading กับ Overriding | overloading ชื่อเดียวกันแต่พารามิเตอร์ต่างกัน · overriding เขียนทับเมธอด `virtual` ของคลาสแม่ |
+| `static` | เป็นของคลาส เรียกได้โดยไม่ต้องสร้าง object |
+| `async` / `await` | รองาน I/O เช่นเรียก API โดยไม่บล็อก thread |
+| `finally` | ทำงานเสมอ ไม่ว่าใน `try` จะเกิด exception หรือไม่ |
+| `?.` กับ `??` | `a?.B` ได้ null ถ้า `a` เป็น null · `x ?? y` ใช้ `y` เมื่อ `x` เป็น null |
+| recursion ที่ไม่มี base case | เรียกตัวเองไม่หยุดจนเกิด `StackOverflowException` |
+| REST เป็น stateless หมายถึง | ทุกคำขอมีข้อมูลครบในตัว เซิร์ฟเวอร์ไม่ต้องจำสถานะของคำขอก่อนหน้า |
+| JSON คืออะไร | รูปแบบข้อความเก็บข้อมูล: `{}` คือ object ที่มี key กับค่า · `[]` คือรายการ |
 
 [กลับสารบัญ](#contents)
 
@@ -1124,6 +1384,8 @@ public static async Task<string> BestShop(string endpoint, string city)
 
 ### 14–18 · SQL ใช้ข้อมูลชุดเดียวกัน
 
+> **ข้อสอบชุดนี้ไม่มีหมวดนี้ ข้ามได้** อ่านไว้เฉพาะถ้ามีเวลาเหลือหรือมีสัมภาษณ์ต่อ
+
 **ลองคิดว่าเป็นสมุดบิล** หนึ่งแถวแทนบิลหนึ่งใบ แต่ละคอลัมน์บอกเรื่องเดียว เช่น เลขบิลหรือยอดเงิน ถ้าถาม “บิลไหนจ่ายแล้ว?” ให้ตรวจสถานะทีละแถวด้วย `WHERE` ถ้าถาม “ลูกค้าแต่ละคนจ่ายรวมเท่าไร?” ให้กองบิลของคนเดียวกันไว้ด้วย `GROUP BY` แล้วบวก `SUM` แต่ถ้าต้องแสดงชื่อลูกค้าด้วย ข้อมูลนั้นอยู่คนละตาราง จึงใช้ `JOIN` จับคู่รหัสก่อน
 
 เวลาอ่านผลให้ถามว่า **หนึ่งแถวของคำตอบแทนอะไร** ในข้อ 14 หนึ่งแถวคือหนึ่งบิล แต่ในข้อ 16 หนึ่งแถวคือหนึ่งลูกค้า รวมถึงคนที่ไม่มีบิล คำถามนี้ช่วยตัดสินทั้งว่าจะเริ่มจากตารางไหนและจะนับอะไร
@@ -1290,6 +1552,8 @@ ORDER BY c.id;
 <a id="extra-b"></a>
 
 #### เสริม B. Top Two Salaries — สองระดับเงินเดือนสูงสุดต่อแผนก
+
+> **ข้อสอบชุดนี้ไม่มีหมวดนี้ ข้ามได้** อ่านไว้เฉพาะถ้ามีเวลาเหลือหรือมีสัมภาษณ์ต่อ
 
 **โจทย์** ในแต่ละแผนก เอาพนักงานที่เงินเดือนอยู่ในสองระดับสูงสุด (คนเงินเดือนเท่ากันนับเป็นระดับเดียว)
 
@@ -1690,6 +1954,8 @@ public static int HeightByLevel(TreeNode? root)
 
 ### 27–30 · System Design — ตอบสั้นก่อน แล้วขยายเมื่อถูกถาม
 
+> **ข้อสอบชุดนี้ไม่มีหมวดนี้ ข้ามได้** อ่านไว้เฉพาะถ้ามีเวลาเหลือหรือมีสัมภาษณ์ต่อ
+
 ลองเริ่มจากเหตุการณ์เดียว ลูกค้ากด “ออกรายงาน” แล้วเน็ตหลุด ถ้าบันทึกงานสำเร็จก่อนเน็ตหลุด เมื่อกดซ้ำควรได้เลขงานเดิม ทีมจึงต้องตัดสินว่า **ใครรับคำขอ เก็บอะไรไว้ที่ไหน และใช้ข้อมูลใดรู้ว่าเป็นงานเดิม** นี่คือสิ่งที่ผู้สัมภาษณ์อยากได้ยินเมื่อถาม System Design
 
 นึกภาพลำดับง่าย ๆ ว่า **หน้าจอ → API รับคำขอ → ฐานข้อมูลเก็บงาน** ถ้าสร้างไฟล์นานจึงเพิ่ม **queue** เป็นที่รอ และให้ **worker** รับงานไปทำ ถ้าถูกถามเรื่อง **cache** ให้นึกถึงการเก็บสำเนาคำตอบที่ถูกขอซ้ำเพื่ออ่านได้เร็วขึ้น ส่วน **transaction** คือการมัดหลายการเปลี่ยนแปลงให้สำเร็จหรือย้อนกลับด้วยกัน เช่น หักสต็อกกับสร้างรายการจองในข้อ 29
@@ -1803,6 +2069,8 @@ LIMIT ?;
 <a id="flowchart"></a>
 
 ### Flowchart · จากผังงานเป็น C# และจากโจทย์เป็นผังงาน
+
+> **ข้อสอบชุดนี้ไม่มีหมวดนี้ ข้ามได้** อ่านไว้เฉพาะถ้ามีเวลาเหลือหรือมีสัมภาษณ์ต่อ
 
 HackerRank มีข้อประเภท **Diagram** ที่เปิดให้วาด flowchart ด้วย draw.io บริษัทเป็นผู้เลือกว่าจะใส่ข้อประเภทนี้หรือไม่ ลองดู **Test format** บนหน้าแนะนำจากลิงก์เชิญ ถ้าข้อมูลที่มีระบุเพียง Coding, API และ SQL สองข้อด้านล่างก็ยังช่วยฝึกตามค่าในลูปและตรวจเงื่อนไขจบซึ่งใช้กับข้อ Coding และ API ได้ด้วย [ชนิดข้อสอบ](https://candidatesupport.hackerrank.com/articles/9586502651-question-types-in-hackerrank) · [วิธีทำข้อ Diagram](https://candidatesupport.hackerrank.com/articles/1784755184-answering-diagram-questions) · [หน้า Test format](https://candidatesupport.hackerrank.com/articles/9881337709-getting-familiar-with-hackerrank-tests)
 
@@ -2074,6 +2342,8 @@ public static async Task<decimal> AverageScore(string endpoint, string city)
 
 #### 34. Net Receipts — รายงานยอดรับสุทธิเมื่อบิลหนึ่งมีหลายแถว
 
+> **ข้อสอบชุดนี้ไม่มีหมวดนี้ ข้ามได้** อ่านไว้เฉพาะถ้ามีเวลาเหลือหรือมีสัมภาษณ์ต่อ
+
 **โจทย์** ทำรายงานเงินของทุกบิลว่า จ่ายเท่าไร คืนเท่าไร และเหลือสุทธิเท่าไร
 
 - **ตาราง:** `Bills(id)` · `Payments(id,bill_id,amount)` ยอดที่จ่าย · `Refunds(id,bill_id,amount)` ยอดที่คืน · บิลหนึ่งมีได้หลายแถวในแต่ละตาราง · amount เป็นบวกเสมอ
@@ -2340,7 +2610,9 @@ public static List<(string Department, string Winner)> DepartmentWinners(
 | ถ้าเห็นคำนี้ หรือกำลังสงสัยเรื่องนี้ | เปิดอ่านตรงนี้ |
 |---|---|
 | odd, even, prime, FizzBuzz, palindrome, digits · โจทย์สั้น | [หาเร็ว](#find) · [เลขคี่ในช่วง](#b1) · [เลขคู่ YES/NO](#b2) · [FizzBuzz](#b3) · [จำนวนเฉพาะ](#b4) · [palindrome](#b5) · [ผลรวมหลัก](#b7) |
-| sorting, Big-O, คำถามตัวเลือก | [คำถามตัวเลือก](#mcq) |
+| sorting, Big-O, OOP, คำถามตัวเลือก | [คำถามตัวเลือก](#mcq) · [ศัพท์ AI](#ai-mcq) |
+| REST API, jsonmock, total_pages · เรียกหลายหน้า | [แม่แบบ REST API](#rest-template) · [วนทุกหน้า](#q11) · [ฟิลด์หาย](#q33) |
+| prompt, few-shot, chain-of-thought, temperature | [AI Prompt Engineering](#ai) · [ศัพท์ AI](#ai-mcq) |
 | array, index, loop, LINQ · รับอะไร คืนอะไร | [พื้นฐาน C#](#coding) · [กลับลำดับ](#q1) · [ผลรวมเกิน int](#q2) · [หมุนรายการ](#q6) |
 | duplicate, pair, contiguous, sorted · รู้ได้อย่างไรว่าควรใช้วิธีไหน | [นับความถี่](#q4) · [หาคู่](#q5) · [sliding window](#q7) · [binary search](#q9) |
 | GET, JSON, pagination · ร้านอยู่หน้าไหน อ่านฟิลด์ไหน | [พื้นฐาน API](#api) · [วนทุกหน้า](#q11) · [กรองแล้วเรียง](#q12) · [คะแนนเสมอ](#q13) |
