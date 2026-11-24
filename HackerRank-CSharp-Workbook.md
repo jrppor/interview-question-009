@@ -38,7 +38,12 @@
 
 #### 1. Reverse Array — กลับลำดับจำนวนเต็ม
 
-**โจทย์** “Return the elements of the array in reverse order.” ให้คืนสมาชิกจากท้ายมาหน้า โดยเก็บข้อมูลต้นฉบับไว้สำหรับผู้เรียก
+**โจทย์** กลับลำดับรายการเลข ให้ตัวท้ายมาอยู่หน้า
+
+- **รับ:** `a` รายการเลขจำนวนเต็ม (`List<int>`)
+- **ต้องคืน:** รายการใหม่ (`List<int>`) ที่เรียงกลับด้าน โดยไม่แก้ `a` ตัวเดิม
+- **ตัวอย่าง:** `[1,4,3,2]` → `[2,3,4,1]`
+- **ในข้อสอบเขียนว่า:** “Return the elements of the array in reverse order.”
 
 ```text
 Sample Input
@@ -56,7 +61,9 @@ Sample Output
 ```csharp
 public static List<int> reverseArray(List<int> a)
 {
+    // ลิสต์ใหม่สำหรับคำตอบ ไม่แตะ a ตัวเดิม
     var result = new List<int>(a.Count);
+    // เริ่มที่ตัวสุดท้าย (a.Count - 1) แล้วถอยทีละช่องจนถึงตัวแรก (0)
     for (int i = a.Count - 1; i >= 0; i--)
         result.Add(a[i]);
     return result;
@@ -71,6 +78,7 @@ public static List<int> reverseArray(List<int> a)
 
 ```csharp
 public static List<int> ReverseShort(List<int> a) =>
+    // AsEnumerable ทำให้ได้ Reverse ของ LINQ ที่คืนลำดับใหม่ แล้ว ToList เก็บเป็นลิสต์
     a.AsEnumerable().Reverse().ToList();
 ```
 
@@ -87,12 +95,18 @@ public static List<int> ReverseShort(List<int> a) =>
 
 #### 2. A Very Big Sum — รวมเลขขนาดใหญ่
 
-**โจทย์** “Return the sum of all integers.” รับ `[1000000000,1000000000,1000000000]` → คืน `3000000000` ตัวเลขแต่ละตัวใส่ใน `int` ได้ แต่ผลรวมเกินขีดจำกัด `2,147,483,647`
+**โจทย์** บวกเลขทุกตัวในรายการ ซึ่งผลรวมอาจใหญ่เกินกว่าที่ `int` เก็บได้
+
+- **รับ:** `numbers` รายการเลข `int`
+- **ต้องคืน:** ผลรวมเป็น `long`
+- **ตัวอย่าง:** `[1000000000,1000000000,1000000000]` → `3000000000` (เกินค่าสูงสุดของ `int` คือ `2,147,483,647`)
+- **ในข้อสอบเขียนว่า:** “Return the sum of all integers.”
 
 **แบบสั้น · LINQ**
 
 ```csharp
 public static long SumShort(List<int> numbers) =>
+    // แปลงแต่ละตัวเป็น long ก่อนบวก ผลรวมจึงไม่ล้น int
     numbers.Sum(x => (long)x);
 ```
 
@@ -101,6 +115,7 @@ public static long SumShort(List<int> numbers) =>
 ```csharp
 public static long BigSum(List<int> numbers)
 {
+    // ตัวเก็บผลรวมเป็น long ตั้งแต่แรก
     long total = 0;
     foreach (int number in numbers)
         total += number;
@@ -120,14 +135,21 @@ public static long BigSum(List<int> numbers)
 
 #### 3. Tallest Candles — นับจำนวนเทียนที่สูงที่สุด
 
-**โจทย์** “Count the candles with the maximum height.” รับรายการที่มีเทียนอย่างน้อยหนึ่งเล่ม `[3,3,5,1,5]` → คืน `2` เพราะเทียนสูง 5 มีสองเล่ม
+**โจทย์** นับว่าเทียนที่สูงที่สุดมีกี่เล่ม
+
+- **รับ:** `heights` ความสูงของเทียนแต่ละเล่ม มีอย่างน้อยหนึ่งเล่ม
+- **ต้องคืน:** `int` จำนวนเล่มที่สูงเท่าค่าสูงสุด
+- **ตัวอย่าง:** `[3,3,5,1,5]` → `2` (สูงสุดคือ 5 มีสองเล่ม)
+- **ในข้อสอบเขียนว่า:** “Count the candles with the maximum height.”
 
 **แบบสั้น · LINQ**
 
 ```csharp
 public static int TallestShort(List<int> heights)
 {
+    // หาความสูงสูงสุดครั้งเดียว
     int tallest = heights.Max();
+    // นับเทียนที่สูงเท่าค่านั้น
     return heights.Count(h => h == tallest);
 }
 ```
@@ -141,11 +163,13 @@ public static int CountTallest(List<int> heights)
     int count = 0;
     foreach (int height in heights)
     {
+        // สูงกว่าสถิติเดิม: เปลี่ยนสถิติ แล้วเริ่มนับใหม่ที่ 1
         if (height > tallest)
         {
             tallest = height;
             count = 1;
         }
+        // สูงเท่าสถิติ: นับเพิ่มหนึ่ง
         else if (height == tallest)
             count++;
     }
@@ -165,12 +189,18 @@ public static int CountTallest(List<int> heights)
 
 #### 4. Matching Socks — จับคู่ถุงเท้า
 
-**โจทย์** “Each number represents a colour. Return the number of matching pairs.” ถุงเท้าหนึ่งข้างใช้ได้ครั้งเดียว `[10,20,20,10,10,30,10] → 3`
+**โจทย์** นับว่าจับถุงเท้าสีเดียวกันเป็นคู่ได้กี่คู่
+
+- **รับ:** `colors` เลขสีของถุงเท้าแต่ละข้าง
+- **ต้องคืน:** `int` จำนวนคู่ทั้งหมด (หนึ่งข้างใช้ได้ครั้งเดียว ข้างที่เหลือเศษไม่นับ)
+- **ตัวอย่าง:** `[10,20,20,10,10,30,10]` → `3` (สี 10 ได้สองคู่ สี 20 ได้หนึ่งคู่ สี 30 ไม่มีคู่)
+- **ในข้อสอบเขียนว่า:** “Each number represents a colour. Return the number of matching pairs.”
 
 **แบบสั้น · LINQ**
 
 ```csharp
 public static int SocksShort(List<int> colors) =>
+    // จัดกลุ่มตามสี แต่ละสีได้ (จำนวนข้าง / 2) คู่ แล้วรวมทุกสี
     colors.GroupBy(color => color).Sum(group => group.Count() / 2);
 ```
 
@@ -179,13 +209,16 @@ public static int SocksShort(List<int> colors) =>
 ```csharp
 public static int SockPairs(List<int> colors)
 {
+    // นับว่าแต่ละสีมีกี่ข้าง
     var counts = new Dictionary<int, int>();
     foreach (int color in colors)
     {
+        // ถ้ายังไม่เคยเจอสีนี้ previous จะเป็น 0
         counts.TryGetValue(color, out int previous);
         counts[color] = previous + 1;
     }
     int pairs = 0;
+    // รวมจำนวนคู่ของทุกสี
     foreach (int count in counts.Values)
         pairs += count / 2;
     return pairs;
@@ -203,21 +236,31 @@ public static int SockPairs(List<int> colors)
 
 #### 5. Two Sum — หาตำแหน่งสองราคาที่รวมได้ตามงบ
 
-**โจทย์** “Return the 1-based indices of two distinct items whose prices sum to the budget.” ราคาเป็นจำนวนบวก มีคำตอบคู่เดียว `budget = 8, prices = [1,4,5,3] → [3,4]`
+**โจทย์** หาสินค้าสองชิ้นที่ราคารวมกันเท่างบพอดี
+
+- **รับ:** `budget` งบ และ `prices` ราคาสินค้า (ทุกราคาเป็นบวก และมีคำตอบคู่เดียวเสมอ)
+- **ต้องคืน:** `int[]` ตำแหน่งของสองชิ้น **นับจาก 1** (ไม่ใช่ 0) ตำแหน่งน้อยก่อน
+- **ตัวอย่าง:** `budget = 8, prices = [1,4,5,3]` → `[3,4]` (ชิ้นที่ 3 ราคา 5 + ชิ้นที่ 4 ราคา 3 = 8)
+- **ในข้อสอบเขียนว่า:** “Return the 1-based indices of two distinct items whose prices sum to the budget.”
 
 **คำตอบสั้น** เก็บ `ราคา → ตำแหน่งที่เคยเจอ` ตอนอ่านราคา 3 ให้หา `8 - 3 = 5` ในตาราง ถ้าเจอ ก็ได้สินค้าสองชิ้นทันที
 
 ```csharp
 public static int[] FindPair(int budget, List<int> prices)
 {
+    // จำว่า ราคา -> ตำแหน่ง (นับจาก 1) ที่เคยเจอ
     var positions = new Dictionary<int, int>();
     for (int i = 0; i < prices.Count; i++)
     {
+        // ราคาที่ต้องมีเพื่อจับคู่กับชิ้นนี้
         int needed = budget - prices[i];
+        // ค้นก่อนเก็บ จะได้ไม่จับคู่กับตัวเอง
         if (positions.TryGetValue(needed, out int earlier))
             return new[] { earlier, i + 1 };
+        // ยังไม่เจอคู่ จึงจำราคาชิ้นนี้ไว้
         positions[prices[i]] = i + 1;
     }
+    // ไม่มีคู่ (โจทย์รับประกันว่ามีเสมอ)
     return Array.Empty<int>();
 }
 ```
@@ -233,20 +276,28 @@ public static int[] FindPair(int budget, List<int> prices)
 
 #### เสริม A. Count Pairs — ถ้าให้ “นับทุกคู่” แทนการหาหนึ่งคู่
 
-**โจทย์** จงนับคู่ตำแหน่ง `i < j` ที่บวกกันได้ `target` ตำแหน่งหนึ่งปรากฏในหลายคู่ได้ `[3,3,3], target=6 → 3` คือคู่ `(0,1),(0,2),(1,2)`
+**โจทย์** นับว่ามีกี่คู่ที่บวกกันได้ `target` (ข้อ 5 หาแค่คู่เดียว ข้อนี้ต้องนับทุกคู่)
+
+- **รับ:** `numbers` รายการเลข และ `target`
+- **ต้องคืน:** `long` จำนวนคู่ตำแหน่ง `i < j` ที่ `numbers[i] + numbers[j] == target` (ตำแหน่งเดียวกันอยู่ได้หลายคู่)
+- **ตัวอย่าง:** `[3,3,3], target=6` → `3` คือคู่ตำแหน่ง `(0,1),(0,2),(1,2)`
 
 **คำตอบสั้น** เปลี่ยนค่าที่เก็บใน Dictionary ของข้อ 5 จาก “ตำแหน่ง” เป็น “จำนวนครั้งที่เจอ” เมื่อเจอเลขที่ขาด ให้บวกจำนวนครั้งทั้งหมดเข้าในคำตอบ
 
 ```csharp
 public static long CountPairs(List<int> numbers, int target)
 {
+    // ค่า -> จำนวนครั้งที่เจอมาแล้ว
     var seen = new Dictionary<long, int>();
     long pairs = 0;
     foreach (int number in numbers)
     {
+        // ค่าที่ต้องจับคู่กับตัวนี้ (ใช้ long กันล้น)
         long needed = (long)target - number;
+        // ทุกตัวก่อนหน้าที่มีค่าเท่า needed จับคู่กับตัวนี้ได้หมด
         if (seen.TryGetValue(needed, out int matches))
             pairs += matches;
+        // นับตัวนี้เข้าไปหลังค้นเสร็จ
         seen.TryGetValue(number, out int previous);
         seen[number] = previous + 1;
     }
@@ -265,15 +316,22 @@ public static long CountPairs(List<int> numbers, int target)
 
 #### 6. Left Rotation — หมุนรายการไปทางซ้าย
 
-**โจทย์** หมุน `[1,2,3,4,5]` ไปซ้าย `d = 7` ครั้ง → `[3,4,5,1,2]` กำหนด `d >= 0` และรายการว่างคืนรายการว่าง
+**โจทย์** หมุนรายการไปทางซ้าย `d` ครั้ง (หมุนหนึ่งครั้ง = ย้ายตัวแรกไปไว้ท้าย)
+
+- **รับ:** `a` รายการเลข และ `d` จำนวนครั้ง (`d >= 0`)
+- **ต้องคืน:** `List<int>` หลังหมุน · ถ้า `a` ว่างให้คืนรายการว่าง
+- **ตัวอย่าง:** `[1,2,3,4,5], d = 7` → `[3,4,5,1,2]`
 
 **แบบสั้น · LINQ**
 
 ```csharp
 public static List<int> RotateShort(List<int> a, int d)
 {
+    // รายการว่าง: คืนเลย กันการหารด้วยศูนย์
     if (a.Count == 0) return new List<int>();
+    // หมุนครบรอบไม่เปลี่ยนอะไร จึงหมุนจริงแค่เศษ
     int cut = d % a.Count;
+    // เอาส่วนตั้งแต่ cut ขึ้นก่อน แล้วต่อด้วยส่วนหน้า
     return a.Skip(cut).Concat(a.Take(cut)).ToList();
 }
 ```
@@ -286,7 +344,9 @@ public static List<int> RotateLeft(List<int> a, int d)
     var result = new List<int>(a.Count);
     if (a.Count == 0) return result;
     int cut = d % a.Count;
+    // ส่วนหลัง: ตำแหน่ง cut ถึงตัวท้าย
     for (int i = cut; i < a.Count; i++) result.Add(a[i]);
+    // ส่วนหน้า: ตำแหน่ง 0 ถึง cut - 1
     for (int i = 0; i < cut; i++) result.Add(a[i]);
     return result;
 }
@@ -304,19 +364,26 @@ public static List<int> RotateLeft(List<int> a, int d)
 
 #### 7. Subarray Division — นับช่วงติดกันยาว k
 
-**โจทย์** นับช่วงยาว `k` ที่ผลรวมเท่ากับ `target` ช่วงซ้อนกันได้ `[1,2,1,3,2], k=2, target=3 → 2`
+**โจทย์** นับว่ามีช่วงติดกันยาว `k` ตัวกี่ช่วงที่ผลรวมเท่ากับ `target`
+
+- **รับ:** `a` รายการเลข, `k` ความยาวช่วง, `target` ผลรวมที่ต้องการ
+- **ต้องคืน:** `int` จำนวนช่วง (ช่วงซ้อนกันได้)
+- **ตัวอย่าง:** `[1,2,1,3,2], k=2, target=3` → `2` (ช่วง `[1,2]` กับ `[2,1]`)
 
 **คำตอบสั้น** เก็บผลรวมของช่วงปัจจุบัน เมื่อเลื่อนไปหนึ่งช่องให้ลบตัวที่ออกจากช่วงและบวกตัวที่เข้ามา
 
 ```csharp
 public static int CountSegments(List<int> a, int k, long target)
 {
+    // ไม่มีช่วงยาว k ให้นับ
     if (k <= 0 || k > a.Count) return 0;
     long sum = 0;
+    // ผลรวมของกรอบแรก (k ตัวแรก)
     for (int i = 0; i < k; i++) sum += a[i];
     int matches = sum == target ? 1 : 0;
     for (int right = k; right < a.Count; right++)
     {
+        // เลื่อนกรอบไปหนึ่งช่อง: ลบตัวที่หลุดออก บวกตัวที่เข้ามา
         sum -= a[right - k];
         sum += a[right];
         if (sum == target) matches++;
@@ -336,22 +403,30 @@ public static int CountSegments(List<int> a, int k, long target)
 
 #### 8. Balanced Brackets — ตรวจวงเล็บซ้อน
 
-**โจทย์** ข้อความมีเฉพาะ `()[]{}` คืน `YES` เมื่อปิดครบและถูกลำดับ `{[()]} → YES` และ `([)] → NO`
+**โจทย์** ตรวจว่าวงเล็บเปิดกับปิดเข้าคู่กันและปิดถูกลำดับหรือไม่
+
+- **รับ:** `text` ที่มีเฉพาะตัว `()[]{}`
+- **ต้องคืน:** string `"YES"` ถ้าถูก หรือ `"NO"` ถ้าผิด
+- **ตัวอย่าง:** `{[()]}` → `YES` · `([)]` → `NO` (ปิดไขว้กัน)
 
 **คำตอบสั้น** เก็บตัวเปิดใน `Stack<char>` เมื่อเจอตัวปิด ดึงตัวเปิดล่าสุดออกมาตรวจ จบแล้วกองต้องว่าง
 
 ```csharp
 public static string Balanced(string text)
 {
+    // กองเก็บ "ตัวปิดที่ต้องเจอ" ตัวบนสุดคือตัวที่ต้องเจอก่อน
     var expected = new Stack<char>();
     foreach (char ch in text)
     {
+        // เจอตัวเปิด: จำตัวปิดที่เป็นคู่ของมันไว้
         if (ch == '(') expected.Push(')');
         else if (ch == '[') expected.Push(']');
         else if (ch == '{') expected.Push('}');
+        // เจอตัวปิด: ถ้ากองว่างหรือไม่ตรงกับตัวที่รอ แปลว่าผิด
         else if (!expected.TryPop(out char closing) || closing != ch)
             return "NO";
     }
+    // อ่านจบแล้วต้องไม่มีตัวเปิดค้าง
     return expected.Count == 0 ? "YES" : "NO";
 }
 ```
@@ -367,13 +442,18 @@ public static string Balanced(string text)
 
 #### 9. Binary Search — ค้นในรายการที่เรียงแล้ว
 
-**โจทย์** คืน index เริ่มที่ 0 ของ `target` ในรายการเรียงน้อยไปมากที่ค่าไม่ซ้ำ ถ้าไม่เจอคืน `-1` เช่น `[2,5,8,12,16], 12 → 3`
+**โจทย์** หาตำแหน่งของ `target` ในรายการที่เรียงแล้ว
+
+- **รับ:** `sorted` รายการที่เรียงน้อยไปมากและค่าไม่ซ้ำ กับ `target` ค่าที่ต้องหา
+- **ต้องคืน:** `int` ตำแหน่ง **นับจาก 0** · ถ้าไม่เจอคืน `-1`
+- **ตัวอย่าง:** `[2,5,8,12,16], 12` → `3`
 
 **แบบสั้น · เมธอดของ List**
 
 ```csharp
 public static int SearchShort(List<int> sorted, int target)
 {
+    // ไม่เจอจะได้เลขติดลบ จึงแปลงเป็น -1 ตามโจทย์
     int index = sorted.BinarySearch(target);
     return index >= 0 ? index : -1;
 }
@@ -384,11 +464,14 @@ public static int SearchShort(List<int> sorted, int target)
 ```csharp
 public static int Search(List<int> sorted, int target)
 {
+    // ช่วงที่ยังต้องค้นคือ left ถึง right
     int left = 0, right = sorted.Count - 1;
     while (left <= right)
     {
+        // ตัวกลางของช่วง (เขียนแบบนี้กันบวกแล้วล้น)
         int mid = left + (right - left) / 2;
         if (sorted[mid] == target) return mid;
+        // ตัวกลางน้อยไป: ทิ้งครึ่งซ้าย · มากไป: ทิ้งครึ่งขวา
         if (sorted[mid] < target) left = mid + 1;
         else right = mid - 1;
     }
@@ -435,16 +518,20 @@ public static int Search(List<int> sorted, int target)
 **แปลงข้อมูลหนึ่งหน้าให้ C# อ่านได้** วางโค้ดกลางนี้ในคลาสเดียวกับคำตอบ `record Shop(...)` ประกาศว่าร้านหนึ่งร้านมีช่องชื่อ เมือง และคะแนน ส่วน `Page` เก็บรายการร้านกับจำนวนหน้า เพื่อเขียน `first.Data[0].Name` แล้วได้ `"Mali"` คำว่า `Task<Page>` บอกว่าคำขอเครือข่ายจะให้ผลเป็น Page เมื่อเสร็จ และ `await` รอผลนั้นก่อนอ่านข้อมูล บรรทัด `JsonPropertyName` จับคู่ชื่อ `total_pages` ใน JSON กับ `TotalPages` ใน C#
 
 ```csharp
+// ร้านหนึ่งร้านใน data
 public record Shop(string Name, string City, decimal Rating);
+// JSON หนึ่งหน้า: จำนวนหน้าทั้งหมด กับรายการร้าน
 public record Page(
     [property: System.Text.Json.Serialization.JsonPropertyName("total_pages")]
     int TotalPages,
     List<Shop> Data);
 
+// ใช้ HttpClient ตัวเดียวทั้งโปรแกรม
 private static readonly HttpClient Client = new HttpClient();
 
 private static async Task<Page> GetPage(string endpoint, int page)
 {
+    // เรียก GET หน้าที่ต้องการ แล้วแปลง JSON เป็น Page
     var result = await Client.GetFromJsonAsync<Page>($"{endpoint}?page={page}");
     return result ?? throw new InvalidOperationException("Expected a JSON page.");
 }
@@ -456,14 +543,21 @@ private static async Task<Page> GetPage(string endpoint, int page)
 
 #### 10. Read One Page — อ่านชื่อร้านในหน้าแรก
 
-**โจทย์** “Return the names on the first page in the order received.” ใช้ข้อมูลด้านบน → `["Mali","Baan"]`
+**โจทย์** เรียก API หน้า 1 แล้วเอาชื่อร้านทั้งหมดในหน้านั้น
+
+- **รับ:** `endpoint` URL ของ API
+- **ต้องคืน:** `List<string>` ชื่อร้าน เรียงตามลำดับที่ API ส่งมา
+- **ตัวอย่าง:** จาก JSON ด้านบน → `["Mali","Baan"]`
+- **ในข้อสอบเขียนว่า:** “Return the names on the first page in the order received.”
 
 **แบบสั้น · LINQ**
 
 ```csharp
 public static async Task<List<string>> FirstNamesShort(string endpoint)
 {
+    // ดึงหน้า 1 ครั้งเดียว
     Page first = await GetPage(endpoint, 1);
+    // แปลงร้านแต่ละร้านเป็นชื่อ ตามลำดับเดิม
     return first.Data.Select(shop => shop.Name).ToList();
 }
 ```
@@ -491,7 +585,12 @@ public static async Task<List<string>> FirstNames(string endpoint)
 
 #### 11. Pagination — นับร้านของเมืองที่กำหนดจากทุกหน้า
 
-**โจทย์** “Count the shops in the given city across all pages.” `city = "Bangkok" → 3` เพราะหน้าแรกมี Mali และหน้าสองมี Arun กับ Dao
+**โจทย์** นับร้านในเมืองที่กำหนด โดยต้องอ่าน API ให้ครบทุกหน้า
+
+- **รับ:** `endpoint` และ `city`
+- **ต้องคืน:** `int` จำนวนร้านในเมืองนั้น รวมจากทุกหน้า
+- **ตัวอย่าง:** `city = "Bangkok"` → `3` (หน้า 1 มี Mali · หน้า 2 มี Arun กับ Dao)
+- **ในข้อสอบเขียนว่า:** “Count the shops in the given city across all pages.”
 
 **คำตอบสั้น** เรียกหน้า 1 เพื่อรู้ `total_pages` จากนั้นอ่านจนครบ นับเฉพาะแถวที่เมืองตรงด้วย `page.Data.Count(shop => shop.City == city)`
 
@@ -501,12 +600,15 @@ public static async Task<int> CountByCity(string endpoint, string city)
     int number = 1;
     int totalPages;
     int count = 0;
+    // do-while: ต้องอ่านหน้า 1 ก่อนจึงรู้ว่ามีทั้งหมดกี่หน้า
     do
     {
         Page page = await GetPage(endpoint, number);
         totalPages = page.TotalPages;
+        // นับเฉพาะร้านที่เมืองตรง
         count += page.Data.Count(shop => shop.City == city);
         number++;
+    // วนต่อจนอ่านหน้าสุดท้ายแล้ว
     } while (number <= totalPages);
     return count;
 }
@@ -532,6 +634,7 @@ private static async IAsyncEnumerable<Shop> ReadShops(string endpoint)
         Page page = await GetPage(endpoint, number);
         totalPages = page.TotalPages;
         foreach (Shop shop in page.Data)
+            // ส่งร้านออกไปทีละร้าน ผู้เรียกรับด้วย await foreach
             yield return shop;
         number++;
     } while (number <= totalPages);
@@ -542,12 +645,17 @@ private static async IAsyncEnumerable<Shop> ReadShops(string endpoint)
 
 #### 12. Filter and Sort — คัดคะแนนแล้วเรียงชื่อ
 
-**โจทย์** คืนชื่อร้านที่คะแนน **อย่างน้อย** `4.8` จากทุกเมือง เรียงชื่อตาม `Ordinal` (เปรียบเทียบตามค่าตัวอักษร) → `["Arun","Baan","Mali"]`
+**โจทย์** เอาชื่อร้านที่คะแนนถึงเกณฑ์จากทุกหน้า แล้วเรียงชื่อ
+
+- **รับ:** `endpoint` และ `minimum` คะแนนขั้นต่ำ
+- **ต้องคืน:** `List<string>` ชื่อร้านทุกเมืองที่คะแนน **อย่างน้อย** `minimum` (เท่ากับก็ผ่าน) เรียงชื่อแบบ `Ordinal` (เทียบตามรหัสตัวอักษร)
+- **ตัวอย่าง:** `minimum = 4.8` → `["Arun","Baan","Mali"]`
 
 **แบบสั้นเมื่อมีข้อมูลในลิสต์แล้ว** วิธีนี้รับรายการร้านที่ดึงมาครบทุกหน้า
 
 ```csharp
 public static List<string> FilterShort(List<Shop> shops, decimal minimum) =>
+    // คะแนนถึงเกณฑ์ -> เอาแค่ชื่อ -> เรียงแบบ Ordinal
     shops.Where(s => s.Rating >= minimum).Select(s => s.Name)
          .OrderBy(name => name, StringComparer.Ordinal).ToList();
 ```
@@ -560,8 +668,10 @@ public static async Task<List<string>> FilterNames(string endpoint, decimal mini
     var names = new List<string>();
     await foreach (Shop shop in ReadShops(endpoint))
     {
+        // เก็บเฉพาะชื่อที่ผ่านเกณฑ์ จากทุกหน้า
         if (shop.Rating >= minimum) names.Add(shop.Name);
     }
+    // เรียงครั้งเดียวหลังอ่านครบทุกหน้า
     names.Sort(StringComparer.Ordinal);
     return names;
 }
@@ -577,12 +687,17 @@ public static async Task<List<string>> FilterNames(string endpoint, decimal mini
 
 #### 13. Best Shop — หาร้านคะแนนสูงสุดเมื่อมีคะแนนเสมอ
 
-**โจทย์** ในเมืองที่กำหนด เลือกคะแนนสูงสุด ถ้าเสมอเลือกชื่อที่มาก่อนตาม Ordinal ถ้าไม่เจอคืน `"NONE"` ตัวอย่าง `Bangkok → Arun`
+**โจทย์** หาร้านคะแนนสูงสุดในเมืองที่กำหนด
+
+- **รับ:** `endpoint` และ `city`
+- **ต้องคืน:** `string` ชื่อร้าน · คะแนนเสมอให้เอาชื่อที่มาก่อนแบบ Ordinal · ไม่มีร้านในเมืองนั้นคืน `"NONE"`
+- **ตัวอย่าง:** `Bangkok` → `Arun` (Arun กับ Mali ได้ 4.8 เท่ากัน แต่ Arun มาก่อนตามตัวอักษร)
 
 **แบบสั้นเมื่อมีลิสต์ที่อ่านครบแล้ว**
 
 ```csharp
 public static string BestShort(List<Shop> shops, string city) =>
+    // เมืองตรง -> คะแนนมากก่อน -> เสมอใช้ชื่อ -> หยิบตัวแรก ไม่มีได้ "NONE"
     shops.Where(s => s.City == city).OrderByDescending(s => s.Rating)
          .ThenBy(s => s.Name, StringComparer.Ordinal)
          .Select(s => s.Name).FirstOrDefault() ?? "NONE";
@@ -593,15 +708,19 @@ public static string BestShort(List<Shop> shops, string city) =>
 ```csharp
 public static async Task<string> BestShop(string endpoint, string city)
 {
+    // ร้านที่ชนะอยู่ตอนนี้ (เริ่มต้นยังไม่มี)
     Shop? best = null;
     await foreach (Shop shop in ReadShops(endpoint))
     {
+        // ข้ามร้านคนละเมือง
         if (shop.City != city) continue;
+        // แทนผู้นำเมื่อ: ยังไม่มีผู้นำ, คะแนนสูงกว่า, หรือคะแนนเท่าแต่ชื่อมาก่อน
         if (best == null || shop.Rating > best.Rating ||
             (shop.Rating == best.Rating &&
              string.CompareOrdinal(shop.Name, best.Name) < 0))
             best = shop;
     }
+    // ไม่เจอร้านในเมืองนี้ได้ "NONE"
     return best?.Name ?? "NONE";
 }
 ```
@@ -638,14 +757,21 @@ public static async Task<string> BestShop(string endpoint, string city)
 
 #### 14. Filter and Order — เลือกออเดอร์ที่จ่ายแล้ว
 
-**โจทย์** แสดงรหัสและยอดของออเดอร์ที่จ่ายแล้วอย่างน้อย 300 เรียงยอดมากไปน้อย ถ้ายอดเสมอเรียงรหัสน้อยก่อน → `(103,500), (101,300)`
+**โจทย์** เลือกบิลที่จ่ายแล้วและมียอดตั้งแต่ 300 ขึ้นไป
+
+- **ต้องแสดง:** คอลัมน์ `id, amount`
+- **เงื่อนไข:** `status = 'PAID'` และ `amount >= 300`
+- **เรียง:** ยอดมากก่อน · ยอดเท่ากันเอารหัสน้อยก่อน
+- **ผลที่ต้องได้:** `(103,500), (101,300)`
 
 **คำตอบสั้น**
 
 ```sql
 SELECT id, amount
 FROM Orders
+-- เฉพาะบิลที่จ่ายแล้ว และยอดอย่างน้อย 300
 WHERE status = 'PAID' AND amount >= 300
+-- ยอดมากก่อน · ยอดเท่ากันเอารหัสน้อยก่อน
 ORDER BY amount DESC, id ASC;
 ```
 
@@ -659,15 +785,22 @@ ORDER BY amount DESC, id ASC;
 
 #### 15. Group and Sum — รวมยอดลูกค้าแล้วกรอง
 
-**โจทย์** คืนรหัสลูกค้าที่จ่ายรวมอย่างน้อย 500 พร้อมยอดรวม เรียงตามรหัส → `(1,500), (2,500)`
+**โจทย์** หาลูกค้าที่จ่ายรวมตั้งแต่ 500 ขึ้นไป
+
+- **ต้องแสดง:** `customer_id, total_paid` (ยอดรวมเฉพาะบิล PAID)
+- **เรียง:** ตามรหัสลูกค้า
+- **ผลที่ต้องได้:** `(1,500), (2,500)`
 
 **คำตอบสั้น**
 
 ```sql
 SELECT customer_id, SUM(amount) AS total_paid
 FROM Orders
+-- กรองทีละบิลก่อนรวม
 WHERE status = 'PAID'
+-- รวมบิลของลูกค้าคนเดียวกันเป็นหนึ่งแถว
 GROUP BY customer_id
+-- กรองยอดรวมหลังรวมแล้ว
 HAVING SUM(amount) >= 500
 ORDER BY customer_id;
 ```
@@ -682,14 +815,20 @@ ORDER BY customer_id;
 
 #### 16. Left Join — แสดงลูกค้าทุกคนรวมคนที่มียอดศูนย์
 
-**โจทย์** แสดงชื่อ จำนวนออเดอร์ที่จ่ายแล้ว และยอดรวม เรียงตามรหัส → `(Mali,2,500), (Arun,1,500), (Dao,0,0), (Fern,0,0)`
+**โจทย์** สรุปยอดของลูกค้า **ทุกคน** รวมคนที่ไม่มีบิลจ่ายเลย
+
+- **ต้องแสดง:** `name`, `paid_orders` (จำนวนบิล PAID), `total_paid` (ยอดรวม PAID) · คนที่ไม่มีบิลให้แสดง 0
+- **เรียง:** ตามรหัสลูกค้า
+- **ผลที่ต้องได้:** `(Mali,2,500), (Arun,1,500), (Dao,0,0), (Fern,0,0)`
 
 **คำตอบสั้น**
 
 ```sql
+-- COUNT(o.id) ไม่นับแถวที่ไม่มีบิล · COALESCE เปลี่ยน NULL เป็น 0
 SELECT c.name, COUNT(o.id) AS paid_orders,
        COALESCE(SUM(o.amount), 0) AS total_paid
 FROM Customers AS c
+-- LEFT JOIN เก็บลูกค้าทุกคน · กรอง PAID ไว้ใน ON ไม่ใช่ WHERE
 LEFT JOIN Orders AS o ON o.customer_id = c.id AND o.status = 'PAID'
 GROUP BY c.id, c.name
 ORDER BY c.id;
@@ -706,13 +845,18 @@ ORDER BY c.id;
 
 #### 17. Not Exists — ลูกค้าที่ไม่เคยจ่ายสำเร็จ
 
-**โจทย์** คืนชื่อคนที่ไม่มีบิลจ่ายแล้ว เรียงตามรหัส → `Dao, Fern`
+**โจทย์** หาลูกค้าที่ไม่มีบิล PAID เลยสักใบ
+
+- **ต้องแสดง:** `name`
+- **เรียง:** ตามรหัสลูกค้า
+- **ผลที่ต้องได้:** `Dao, Fern` (Dao มีแต่บิลยกเลิก · Fern ไม่มีบิลเลย)
 
 **คำตอบสั้น**
 
 ```sql
 SELECT c.name
 FROM Customers AS c
+-- เอาเฉพาะลูกค้าที่หาบิล PAID ของตัวเองไม่เจอเลย
 WHERE NOT EXISTS (
     SELECT 1 FROM Orders AS o
     WHERE o.customer_id = c.id AND o.status = 'PAID'
@@ -730,17 +874,23 @@ ORDER BY c.id;
 
 #### 18. Joint Winners — คืนผู้ชนะทุกคนที่คะแนนเสมอ
 
-**โจทย์** พิจารณาเฉพาะคนที่มีบิลจ่ายแล้ว หาเจ้าของยอดรวมสูงสุด เอาคนที่เสมอทั้งหมด เรียงรหัส → `(Mali,500), (Arun,500)`
+**โจทย์** หาลูกค้าที่ยอดจ่ายรวม (PAID) สูงสุด ถ้าเสมอให้เอาทุกคน
+
+- **ต้องแสดง:** `name, total_paid`
+- **เรียง:** ตามรหัสลูกค้า
+- **ผลที่ต้องได้:** `(Mali,500), (Arun,500)` (สองคนเสมอกันที่ 500)
 
 **คำตอบสั้น**
 
 ```sql
+-- ยอดรวมของลูกค้าแต่ละคน (เฉพาะบิล PAID)
 WITH totals AS (
     SELECT customer_id, SUM(amount) AS total_paid
     FROM Orders WHERE status = 'PAID' GROUP BY customer_id
 )
 SELECT c.name, t.total_paid
 FROM totals AS t JOIN Customers AS c ON c.id = t.customer_id
+-- เอาทุกคนที่ยอดเท่ากับยอดสูงสุด รวมคนเสมอ
 WHERE t.total_paid = (SELECT MAX(total_paid) FROM totals)
 ORDER BY c.id;
 ```
@@ -755,19 +905,25 @@ ORDER BY c.id;
 
 #### เสริม B. Top Two Salaries — สองระดับเงินเดือนสูงสุดต่อแผนก
 
-**โจทย์** ตาราง `Employees(id, department_id, salary)` มีเงินเดือนครบทุกแถว เอาพนักงานทุกคนที่อยู่ใน **สองระดับเงินเดือนสูงสุดของแผนกตัวเอง** ตัวอย่างแผนกเดียวมี `100,100,90,80` → ได้ `100,100,90`
+**โจทย์** ในแต่ละแผนก เอาพนักงานที่เงินเดือนอยู่ในสองระดับสูงสุด (คนเงินเดือนเท่ากันนับเป็นระดับเดียว)
+
+- **ตาราง:** `Employees(id, department_id, salary)` เงินเดือนไม่มีค่าว่าง
+- **ต้องแสดง:** `department_id, id, salary`
+- **ตัวอย่าง:** แผนกหนึ่งมีเงินเดือน `100,100,90,80` → ได้ `100,100,90` (ระดับ 1 คือ 100 สองคน ระดับ 2 คือ 90)
 
 **อ่านคำสั่งจัดอันดับ** ลองวางพนักงานเป็นแถวแยกตามแผนก แล้วเรียงเงินเดือนในแต่ละแถวจากมากไปน้อย คนที่เงินเดือนเท่ากันได้เลขอันดับเดียวกัน พอขึ้นแผนกใหม่ก็เริ่มนับที่ 1 อีกครั้ง ใน SQL คำว่า `PARTITION BY` กำหนดว่าอะไรทำให้อันดับเริ่มใหม่ ส่วน `DENSE_RANK` ให้เลขอันดับติดกันแม้มีคนเสมอ
 
 ```sql
 WITH ranked AS (
     SELECT id, department_id, salary,
+           -- อันดับเงินเดือนภายในแผนก เงินเดือนเท่ากันได้อันดับเดียวกัน
            DENSE_RANK() OVER (
                PARTITION BY department_id ORDER BY salary DESC
            ) AS salary_rank
     FROM Employees
 )
 SELECT department_id, id, salary
+-- เอาเฉพาะสองระดับแรก
 FROM ranked WHERE salary_rank <= 2
 ORDER BY department_id, salary DESC, id;
 ```
@@ -794,7 +950,12 @@ ORDER BY department_id, salary DESC, id;
 
 #### 19. Merge Intervals — รวมช่วงเวลาที่ทับกัน
 
-**โจทย์** “Merge all overlapping closed intervals.” รับช่วง `[start,end]` ที่ `start <= end` ต้นและปลายรวมอยู่ในช่วงทั้งคู่ ให้คืนช่วงหลังรวม เรียงตามจุดเริ่มต้น ตัวอย่าง `[(8,10),(1,3),(2,6),(10,12)] → [(1,6),(8,12)]`
+**โจทย์** รวมช่วงเวลาที่ทับหรือแตะกันให้เป็นช่วงเดียว
+
+- **รับ:** รายการช่วง `(Start, End)` ที่ `Start <= End` และนับปลายทั้งสองข้างอยู่ในช่วง
+- **ต้องคืน:** รายการช่วงหลังรวม เรียงตามจุดเริ่ม
+- **ตัวอย่าง:** `[(8,10),(1,3),(2,6),(10,12)]` → `[(1,6),(8,12)]` (1–3 กับ 2–6 ทับกัน · 8–10 กับ 10–12 แตะกันที่ 10)
+- **ในข้อสอบเขียนว่า:** “Merge all overlapping closed intervals.”
 
 **คำตอบสั้น** เรียงจุดเริ่มต้นก่อน แล้วเทียบช่วงใหม่กับช่วงท้ายสุดในคำตอบ ถ้าแตะกันให้ขยายปลายไปยังค่าที่ไกลกว่า
 
@@ -802,12 +963,15 @@ ORDER BY department_id, salary DESC, id;
 public static List<(int Start, int End)> Merge(List<(int Start, int End)> ranges)
 {
     var merged = new List<(int Start, int End)>();
+    // เรียงตามจุดเริ่มก่อน
     foreach (var next in ranges.OrderBy(r => r.Start))
     {
+        // ไม่แตะช่วงท้ายสุดในคำตอบ: เริ่มช่วงใหม่
         if (merged.Count == 0 || next.Start > merged[^1].End)
             merged.Add(next);
         else
         {
+            // แตะหรือทับ: ขยายปลายของช่วงท้ายสุดไปค่าที่ไกลกว่า
             var last = merged[^1];
             merged[^1] = (last.Start, Math.Max(last.End, next.End));
         }
@@ -827,7 +991,11 @@ public static List<(int Start, int End)> Merge(List<(int Start, int End)> ranges
 
 #### 20. Activity Selection — รับนัดให้ได้จำนวนมากที่สุด
 
-**โจทย์** มีห้องเดียว นัดแต่ละรายการมีเวลาเริ่มน้อยกว่าเวลาจบ รับนัดต่อไปได้ทันทีที่นัดก่อนจบ คืนจำนวนรายการมากที่สุด `[(0,10),(1,3),(3,5),(5,7)] → 3`
+**โจทย์** มีห้องประชุมห้องเดียว เลือกรับนัดให้ได้มากที่สุดโดยนัดไม่ซ้อนกัน
+
+- **รับ:** รายการนัด `(Start, End)` ที่ `Start < End` · นัดใหม่เริ่มได้ทันทีตอนนัดก่อนจบ
+- **ต้องคืน:** `int` จำนวนนัดมากที่สุดที่รับได้
+- **ตัวอย่าง:** `[(0,10),(1,3),(3,5),(5,7)]` → `3` (รับ 1–3, 3–5, 5–7)
 
 **คำตอบสั้น** เลือกนัดที่ **จบเร็วที่สุด** ในบรรดานัดที่เข้าร่วมได้ จากนั้นทำซ้ำ วิธีนี้เรียกว่า greedy
 
@@ -835,9 +1003,12 @@ public static List<(int Start, int End)> Merge(List<(int Start, int End)> ranges
 public static int MaxMeetings(List<(int Start, int End)> meetings)
 {
     int accepted = 0;
+    // เวลาจบของนัดล่าสุดที่รับไว้
     int lastEnd = int.MinValue;
+    // ไล่นัดที่จบเร็วก่อน
     foreach (var meeting in meetings.OrderBy(m => m.End))
     {
+        // เริ่มก่อนนัดเดิมจบ: รับไม่ได้
         if (meeting.Start < lastEnd) continue;
         accepted++;
         lastEnd = meeting.End;
@@ -857,7 +1028,11 @@ public static int MaxMeetings(List<(int Start, int End)> meetings)
 
 #### 21. Minimum Coins — ทอนเงินด้วยเหรียญน้อยที่สุด
 
-**โจทย์** เหรียญทุกชนิดเป็นจำนวนเต็มบวก มีไม่จำกัด ยอดเป้าหมายอยู่ระหว่าง 0–10,000 ใช้เหรียญให้น้อยที่สุด ถ้าทอนไม่ได้คืน `-1` เช่น `coins=[1,3,4], amount=6 → 2`
+**โจทย์** ทอนเงินให้ครบยอดโดยใช้จำนวนเหรียญน้อยที่สุด
+
+- **รับ:** `coins` ชนิดเหรียญ (เป็นบวก ใช้ซ้ำได้ไม่จำกัด) และ `amount` ยอดที่ต้องทอน (0–10,000)
+- **ต้องคืน:** `int` จำนวนเหรียญน้อยที่สุด · ทอนไม่ได้คืน `-1`
+- **ตัวอย่าง:** `coins=[1,3,4], amount=6` → `2` (3+3)
 
 **คำตอบสั้น** ให้ `best[x]` เป็นจำนวนเหรียญน้อยสุดที่ทอนยอด `x` ได้ ลองเหรียญทุกชนิดเป็นเหรียญสุดท้าย แล้วเลือกคำตอบที่น้อยสุด
 
@@ -866,17 +1041,21 @@ public static int MaxMeetings(List<(int Start, int End)> meetings)
 ```csharp
 public static int MinCoins(int[] coins, int amount)
 {
+    // ค่าที่แปลว่า "ยังทอนไม่ได้" (มากกว่าคำตอบที่เป็นไปได้ทุกค่า)
     int missing = amount + 1;
     int[] best = Enumerable.Repeat(missing, amount + 1).ToArray();
+    // ยอด 0 ไม่ต้องใช้เหรียญ
     best[0] = 0;
     for (int value = 1; value <= amount; value++)
     {
         foreach (int coin in coins)
         {
+            // ลองให้ coin เป็นเหรียญสุดท้าย: คำตอบของ value - coin แล้วบวกอีก 1 เหรียญ
             if (coin <= value)
                 best[value] = Math.Min(best[value], best[value - coin] + 1);
         }
     }
+    // ยังเป็น missing แปลว่าทอนไม่ได้
     return best[amount] == missing ? -1 : best[amount];
 }
 ```
@@ -893,13 +1072,18 @@ public static int MinCoins(int[] coins, int amount)
 
 #### 22. Shortest Route — จำนวนช่วงทางน้อยที่สุดในกราฟ
 
-**โจทย์** เมืองเชื่อมด้วยถนนสองทิศทาง ทุกถนนนับเป็นหนึ่งช่วง คืนจำนวนช่วงน้อยสุดจากต้นทางถึงปลายทาง หรือ `-1` ถ้าไปไม่ถึง เมืองใช้หมายเลขเริ่มที่ 0 ตัวอย่างถนน `0–1, 0–2, 1–3, 2–4, 4–3` จาก `0` ไป `3 → 2`
+**โจทย์** หาว่าต้องผ่านถนนน้อยที่สุดกี่เส้นจากเมืองต้นทางไปเมืองปลายทาง
+
+- **รับ:** `neighbors` (`neighbors[x]` คือรายการเมืองที่เมือง x ไปถึงได้ด้วยถนนหนึ่งเส้น ถนนไปกลับได้) · `start` · `goal` · เมืองเป็นเลขเริ่มที่ 0
+- **ต้องคืน:** `int` จำนวนถนนน้อยที่สุด · ไปไม่ถึงคืน `-1`
+- **ตัวอย่าง:** ถนน `0–1, 0–2, 1–3, 2–4, 4–3` จาก `0` ไป `3` → `2` (0 → 1 → 3)
 
 **คำตอบสั้น** ใช้ **Breadth-First Search (BFS)** คิดเหมือนค่อย ๆ วาดวงรอบจุดเริ่มต้น วงแรกคือเมืองที่เดินถึงในหนึ่งช่วง วงถัดไปคือเมืองที่ต้องเดินสองช่วง ใช้ Queue เก็บเมืองที่รอสำรวจ ทำเครื่องหมายทันทีที่นำเมืองเข้าคิว ครั้งแรกที่พบเมืองจึงมาจากเส้นทางที่สั้นที่สุด
 
 ```csharp
 public static int Shortest(List<List<int>> neighbors, int start, int goal)
 {
+    // -1 = ยังไปไม่ถึง
     int[] distance = Enumerable.Repeat(-1, neighbors.Count).ToArray();
     var queue = new Queue<int>();
     distance[start] = 0;
@@ -907,10 +1091,13 @@ public static int Shortest(List<List<int>> neighbors, int start, int goal)
     while (queue.Count > 0)
     {
         int city = queue.Dequeue();
+        // ถึงปลายทางครั้งแรก = ระยะสั้นที่สุด
         if (city == goal) return distance[city];
         foreach (int next in neighbors[city])
         {
+            // เคยไปแล้ว ข้าม
             if (distance[next] != -1) continue;
+            // ไกลกว่าเมืองปัจจุบันหนึ่งเส้น แล้วเข้าคิวรอสำรวจ
             distance[next] = distance[city] + 1;
             queue.Enqueue(next);
         }
@@ -941,7 +1128,12 @@ public static int Shortest(List<List<int>> neighbors, int start, int goal)
 
 #### 23. First Duplicate — คืนค่าที่เจอซ้ำก่อน
 
-**โจทย์** “Return the first value encountered for a second time.” คืนค่าที่เจอเป็นครั้งที่สองก่อนค่าอื่น ถ้าไม่พบให้คืน `null` ตัวอย่าง `[2,1,1,2] → 1`
+**โจทย์** ไล่จากซ้ายไปขวา แล้วคืนค่าแรกที่ถูกเจอเป็นครั้งที่สอง
+
+- **รับ:** `values` รายการเลข
+- **ต้องคืน:** `int?` ค่านั้น · ไม่มีค่าซ้ำเลยคืน `null`
+- **ตัวอย่าง:** `[2,1,1,2]` → `1` (เลข 1 ซ้ำที่ตำแหน่ง 2 ก่อนเลข 2 จะซ้ำที่ตำแหน่ง 3)
+- **ในข้อสอบเขียนว่า:** “Return the first value encountered for a second time.”
 
 **คำตอบสั้น** ใช้ `HashSet` จำว่าค่าใดเคยผ่านมา `Add` คืน false ทันทีถ้าค่านั้นอยู่ในเซตแล้ว
 
@@ -950,7 +1142,9 @@ public static int? FirstDuplicate(List<int> values)
 {
     var seen = new HashSet<int>();
     foreach (int value in values)
+        // Add คืน false = เคยเจอแล้ว จึงเป็นค่าซ้ำตัวแรก
         if (!seen.Add(value)) return value;
+    // ไม่มีค่าซ้ำ
     return null;
 }
 ```
@@ -967,7 +1161,11 @@ public static int? FirstDuplicate(List<int> values)
 
 #### 24. Printer Queue — จำลองคิวเครื่องพิมพ์
 
-**โจทย์** รับคำสั่ง `ADD ชื่อ` หรือ `PRINT` โดยชื่อเอกสารยาวอย่างน้อยหนึ่งอักขระ สั่งพิมพ์ให้คืนชื่อที่เข้าก่อน ถ้าไม่มีงานให้คืน `EMPTY` ตัวอย่าง `["ADD A","ADD B","PRINT","ADD C","PRINT","PRINT","PRINT"] → ["A","B","C","EMPTY"]`
+**โจทย์** จำลองคิวเครื่องพิมพ์ งานที่สั่งก่อนได้พิมพ์ก่อน
+
+- **รับ:** `commands` แต่ละตัวเป็น `"ADD ชื่อ"` (เพิ่มงาน) หรือ `"PRINT"` (พิมพ์งานที่รอนานที่สุด)
+- **ต้องคืน:** `List<string>` ผลของ PRINT ทุกครั้งตามลำดับ · ถ้าตอน PRINT ไม่มีงานรอ ให้ใส่ `"EMPTY"`
+- **ตัวอย่าง:** `["ADD A","ADD B","PRINT","ADD C","PRINT","PRINT","PRINT"]` → `["A","B","C","EMPTY"]`
 
 **คำตอบสั้น** งานเข้าท้ายออกหน้า ใช้ `Queue<string>` โดย `Enqueue` เพิ่ม และ `TryDequeue` หยิบพร้อมนำออก
 
@@ -978,8 +1176,10 @@ public static List<string> Printer(List<string> commands)
     var printed = new List<string>();
     foreach (string command in commands)
     {
+        // ADD: ตัด "ADD " ออก แล้วต่อท้ายคิว
         if (command.StartsWith("ADD ", StringComparison.Ordinal))
             waiting.Enqueue(command.Substring(4));
+        // PRINT: หยิบหัวคิวออก ถ้าคิวว่างได้ "EMPTY"
         else
             printed.Add(waiting.TryDequeue(out var job) ? job : "EMPTY");
     }
@@ -998,7 +1198,11 @@ public static List<string> Printer(List<string> commands)
 
 #### 25. Reverse Linked List — กลับทิศลิงก์โดยใช้โหนดเดิม
 
-**โจทย์** แต่ละโหนดมีค่าและตัวชี้ไปโหนดถัดไป รับหัวของรายการที่ไม่มีวงวน แล้วคืนหัวใหม่ `1 → 4 → 3 → null` กลับเป็น `3 → 4 → 1 → null` ใช้พื้นที่เพิ่มคงที่
+**โจทย์** กลับทิศ linked list โดยเปลี่ยนลูกศรของโหนดเดิม (ไม่สร้างโหนดใหม่)
+
+- **รับ:** `head` โหนดแรกของรายการ (แต่ละโหนดมี `Value` และ `Next` ที่ชี้ไปโหนดถัดไป · ไม่มีวงวน)
+- **ต้องคืน:** โหนดหัวใหม่ · ใช้พื้นที่เพิ่มคงที่
+- **ตัวอย่าง:** `1 → 4 → 3 → null` กลายเป็น `3 → 4 → 1 → null` (คืนโหนด 3)
 
 **คำตอบสั้น** เดินทีละโหนด จำตัวถัดไปไว้ก่อนเปลี่ยนลูกศรให้ชี้กลับ
 
@@ -1015,11 +1219,15 @@ public static Node? ReverseNodes(Node? head)
     Node? current = head;
     while (current != null)
     {
+        // จำตัวถัดไปไว้ก่อน ไม่อย่างนั้นจะหาไม่เจอ
         Node? next = current.Next;
+        // กลับลูกศรให้ชี้ไปตัวก่อนหน้า
         current.Next = previous;
+        // ขยับทั้งสองตัวไปข้างหน้าหนึ่งก้าว
         previous = current;
         current = next;
     }
+    // previous คือหัวใหม่
     return previous;
 }
 ```
@@ -1035,7 +1243,11 @@ public static Node? ReverseNodes(Node? head)
 
 #### 26. Tree Height — หาความสูงของต้นไม้ทวิภาค
 
-**โจทย์** ข้อนี้นับความสูงเป็น **จำนวนเส้นเชื่อม** ในเส้นทางยาวสุดจากรากไปใบ ต้นไม้ว่างสูง `-1` ใบเดี่ยวสูง `0` ถ้าราก 10 มีลูก 5 กับ 20 และ 5 มีลูก 2 จะได้ `2` จากเส้นทาง `10 → 5 → 2`
+**โจทย์** หาความสูงของ binary tree
+
+- **รับ:** `root` โหนดราก (อาจเป็น `null`)
+- **ต้องคืน:** `int` จำนวน **เส้นเชื่อม** บนทางที่ยาวที่สุดจากรากลงไปถึงใบ · ต้นไม้ว่างได้ `-1` · มีโหนดเดียวได้ `0`
+- **ตัวอย่าง:** ราก 10 มีลูก 5 กับ 20 และ 5 มีลูก 2 → `2` (ทาง `10 → 5 → 2` มีสองเส้น)
 
 **แบบสั้น · recursion**
 
@@ -1048,6 +1260,7 @@ public sealed class TreeNode
 }
 
 public static int Height(TreeNode? root) =>
+    // ว่าง = -1 · มีโหนด = 1 + ความสูงของฝั่งที่สูงกว่า
     root == null ? -1 : 1 + Math.Max(Height(root.Left), Height(root.Right));
 ```
 
@@ -1062,7 +1275,9 @@ public static int HeightByLevel(TreeNode? root)
     int height = -1;
     while (queue.Count > 0)
     {
+        // จำจำนวนโหนดของชั้นนี้ก่อน ลูกที่ใส่เพิ่มเป็นของชั้นถัดไป
         int nodesThisLevel = queue.Count;
+        // ผ่านไปอีกหนึ่งชั้น
         height++;
         for (int i = 0; i < nodesThisLevel; i++)
         {
@@ -1101,6 +1316,8 @@ public static int HeightByLevel(TreeNode? root)
 
 **โจทย์** “Design a URL shortener. Links can expire and their destination is immutable.” สร้างลิงก์สั้นที่มีวันหมดอายุ เมื่อเปิดให้พาไปปลายทางเดิม สมมติ 1 ล้านลิงก์ใหม่ต่อวันและมีการเปิด 100 ครั้งต่อการสร้างหนึ่งครั้ง
 
+**สิ่งที่ต้องตอบ** ตอบปากเปล่า ไม่ต้องเขียนโค้ด อธิบายว่าสร้างลิงก์และเปิดลิงก์ทำงานอย่างไร เก็บข้อมูลแบบไหน และรับการอ่านที่มากกว่าการเขียนร้อยเท่าได้อย่างไร
+
 **ตัวอย่างการใช้งาน** `POST /links` ส่ง URL กับวันหมดอายุ → `201 Created` พร้อมรหัส `a7K29pQ` เมื่อเปิด `GET /a7K29pQ` ก่อนหมดอายุ → `302 Found` พร้อม `Location` เป็น URL เดิม
 
 **คำตอบสั้น · พูดประมาณ 30 วินาที** “ผมแยกสองทางครับ ทางสร้างให้ ASP.NET Core สุ่มรหัสแล้วบันทึก SQL ที่บังคับให้ code ไม่ซ้ำ ทางเปิดค้นด้วย code ตรวจวันหมดอายุแล้ว redirect เนื่องจากอ่านบ่อยกว่าเขียนร้อยเท่า ผมจะวัดเวลาอ่านก่อน และเพิ่ม cache สำหรับลิงก์ยอดนิยมถ้าฐานข้อมูลเริ่มเป็นคอขวด”
@@ -1122,6 +1339,8 @@ public static int HeightByLevel(TreeNode? root)
 
 **โจทย์** “Design an export API. Each report takes 30 seconds. Users can check its status and retry.” ลูกค้ากดออกรายงาน ระบบต้องตอบรับก่อนงานเสร็จ และเมื่อผู้ใช้กดซ้ำหลังเน็ตหลุดต้องไม่เริ่มงานใหม่
 
+**สิ่งที่ต้องตอบ** ตอบปากเปล่า อธิบายว่าระบบตอบผู้ใช้อย่างไรก่อนงานเสร็จ ผู้ใช้เช็กสถานะอย่างไร และกดซ้ำแล้วไม่เกิดงานซ้ำได้อย่างไร
+
 **ตัวอย่าง** `POST /exports` พร้อม `Idempotency-Key: R17` → `202 Accepted`, `jobId=42` ต่อมา `GET /exports/42` → `Running` แล้ว `Succeeded` พร้อมลิงก์ดาวน์โหลดที่มีอายุจำกัด
 
 **คำตอบสั้น** “ผมจะบันทึกงานกับรหัสคำขอในฐานข้อมูล แล้วคืน job ID ให้ผู้ใช้เช็กสถานะ ให้ worker สร้างไฟล์เบื้องหลัง ถ้าส่งคำขอเดิมมาอีก ให้คืน job ID เดิมครับ”
@@ -1141,6 +1360,8 @@ public static int HeightByLevel(TreeNode? root)
 
 **โจทย์** สินค้าเหลือหนึ่งชิ้น ผู้ซื้อสองคนกดจองในเวลาเดียวกัน การจองที่ยังไม่ชำระหมดอายุใน 10 นาที ออกแบบให้มีผู้ได้สิทธิ์เพียงคนเดียว
 
+**สิ่งที่ต้องตอบ** ตอบปากเปล่า อธิบายว่าระบบตัดสินอย่างไรให้มีผู้ได้สินค้าคนเดียวเสมอ และจัดการการจองที่หมดเวลาอย่างไร
+
 **ตัวอย่าง** Mali กับ Arun ส่ง `POST /reservations` สำหรับ SKU เดียวกัน → หนึ่งคนได้ `201 Reserved` อีกคนได้ `409 Out of stock` เมื่อผู้ชนะส่งคำขอเดิมซ้ำต้องได้การจองเดิม
 
 **คำตอบสั้น** “ผมให้ฐานข้อมูลเป็นผู้ตัดสินครับ ใช้คำสั่งเดียวหักสต็อกเฉพาะเมื่อยังเหลือ ตรวจจำนวนแถวที่เปลี่ยน แล้วสร้างการจองใน transaction เดียวกัน ถ้าสร้างไม่สำเร็จต้องย้อนการหักสต็อกด้วย”
@@ -1148,6 +1369,7 @@ public static int HeightByLevel(TreeNode? root)
 ```sql
 UPDATE Inventory
 SET available = available - 1
+-- หักได้เฉพาะเมื่อยังเหลือ คนที่สองจะเปลี่ยน 0 แถว
 WHERE sku = @sku AND available >= 1;
 ```
 
@@ -1163,6 +1385,8 @@ WHERE sku = @sku AND available >= 1;
 #### 30. Orders Feed — ออกแบบ API แบ่งหน้าเมื่อมีข้อมูลใหม่แทรก
 
 **โจทย์** “List a customer's orders newest first. New orders arrive while the customer is reading.” ผู้ใช้กดหน้าถัดไปได้ต่อเนื่อง เรียงใหม่ไปเก่า รายการที่เห็นแล้วไม่ควรโผล่ซ้ำเพราะมีรายการใหม่เข้ามาที่หัวตาราง
+
+**สิ่งที่ต้องตอบ** ตอบปากเปล่า อธิบายว่าจะส่งหน้าถัดไปอย่างไรไม่ให้รายการซ้ำหรือตกหล่น พร้อม SQL ของหน้าถัดไป
 
 **ตัวอย่าง** หน้าแรกได้รหัส `[105,104]` จากนั้นมี 106 เข้ามา ถ้าหน้าถัดไปใช้ `OFFSET 2` กับชุด `[106,105,104,103,102]` จะได้ `[104,103]` ซึ่งมี 104 ซ้ำ สิ่งที่ต้องการคือ `[103,102]`
 
@@ -1180,6 +1404,7 @@ WHERE sku = @sku AND available >= 1;
 SELECT id, created_at
 FROM Orders
 WHERE customer_id = ?
+  -- เก่ากว่าแถวสุดท้ายของหน้าก่อน (เวลาเท่ากันใช้ id ตัดสิน)
   AND (created_at < ? OR (created_at = ? AND id < ?))
 ORDER BY created_at DESC, id DESC
 LIMIT ?;
@@ -1211,7 +1436,11 @@ HackerRank มีข้อประเภท **Diagram** ที่เปิด�
 
 #### เสริม C. Trace the flowchart — ผังนี้คืนค่าอะไร?
 
-**โจทย์** รับ `a = [3, 2, 4, 1]` ผังด้านล่างคืนค่าอะไร? ลองทำนายก่อนอ่านโค้ด และลองอีกครั้งเมื่อ `a = []`
+**โจทย์** ไล่ตามผังด้านล่างทีละกล่อง แล้วบอกว่าผังคืนค่าอะไร
+
+- **รับ:** `a = [3, 2, 4, 1]` แล้วลองอีกรอบกับ `a = []`
+- **ต้องตอบ:** ค่า `sum` ที่ผังคืนในแต่ละกรณี
+- **วิธีทำ:** ทายคำตอบก่อน แล้วค่อยดูตารางไล่ค่าและโค้ดด้านล่าง
 
 ```mermaid
 flowchart TD
@@ -1245,8 +1474,10 @@ public static long SumEven(List<int> a)
     long sum = 0;
     while (i < a.Count)
     {
+        // เลขคู่จึงบวก
         if (a[i] % 2 == 0)
             sum += a[i];
+        // ทุกทางมาเจอกันที่นี่: เลื่อนไปตัวถัดไปเสมอ
         i++;
     }
     return sum;
@@ -1259,7 +1490,11 @@ public static long SumEven(List<int> a)
 
 #### เสริม D. Draw a flowchart — นับร้านจาก API ให้ครบทุกหน้า
 
-**โจทย์** “Draw a flowchart that counts all shops in a given city across every page.” API เริ่มหน้า 1 ตอบสำเร็จทุกครั้ง และบอก `total_pages` ในผลลัพธ์ หน้า 1 มีร้านใน Bangkok 1 ร้าน หน้า 2 เป็นหน้าว่าง หน้า 3 มีร้านใน Bangkok 2 ร้าน ระบบควรคืนอะไร? ลองวาดผังด้วยตัวเองก่อนดูตัวอย่าง
+**โจทย์** วาด flowchart ที่นับร้านในเมืองที่กำหนดจาก API ให้ครบทุกหน้า
+
+- **ข้อมูล:** API เริ่มที่หน้า 1 ตอบสำเร็จทุกครั้ง และบอก `total_pages` ในผลลัพธ์ · หน้า 1 มีร้านใน Bangkok 1 ร้าน หน้า 2 ว่าง หน้า 3 มี 2 ร้าน
+- **ต้องตอบ:** ผังงาน และค่าที่ระบบควรคืนสำหรับ Bangkok
+- **ในข้อสอบเขียนว่า:** “Draw a flowchart that counts all shops in a given city across every page.”
 
 **คำตอบสั้น** คืน `3` ต้องอ่านหน้า 3 แม้หน้า 2 จะไม่มีร้าน เพราะจำนวนหน้าที่ API แจ้งยังเหลืออยู่
 
@@ -1297,9 +1532,13 @@ flowchart TD
 
 #### 31. Make Anagrams — ลบตัวอักษรให้น้อยที่สุด
 
-**โจทย์** “Delete the fewest characters so that the two remaining strings are anagrams.” ลบอักขระจากข้อความใดก็ได้ เมื่อลบแล้ว ตัวอักษรแต่ละชนิดต้องเหลือจำนวนเท่ากันทั้งสองฝั่ง โดยสลับตำแหน่งได้ ให้คืนจำนวนตัวที่ลบรวมกัน ทั้งสองข้อความมีเฉพาะ `a` ถึง `z` ความยาวแต่ละข้อความ 0–100,000
+**โจทย์** ลบตัวอักษรออกจากสองข้อความให้น้อยที่สุด จนทั้งสองข้อความเหลือตัวอักษรชุดเดียวกัน (ลำดับไม่สำคัญ)
 
-**ฟังก์ชัน** `int Deletions(string left, string right)` ตัวอย่าง `"aabc", "abb" → 3` ลบ `a` หนึ่งตัวกับ `c` หนึ่งตัวจากฝั่งซ้าย และ `b` หนึ่งตัวจากฝั่งขวา เหลือ `"ab"` ทั้งคู่
+- **รับ:** `left` และ `right` มีเฉพาะ `a`–`z` ยาว 0–100,000 ตัว
+- **ต้องคืน:** `int` จำนวนตัวที่ลบ รวมทั้งสองฝั่ง
+- **ตัวอย่าง:** `"aabc", "abb"` → `3` (ลบ `a` กับ `c` จากฝั่งซ้าย และ `b` จากฝั่งขวา เหลือ `"ab"` ทั้งคู่)
+- **ฟังก์ชัน:** `int Deletions(string left, string right)`
+- **ในข้อสอบเขียนว่า:** “Delete the fewest characters so that the two remaining strings are anagrams.”
 
 #### เฉลย 31 · นับจำนวนตัวอักษรที่เกินมาแต่ละฝั่ง
 
@@ -1308,9 +1547,11 @@ flowchart TD
 ```csharp
 public static int Deletions(string left, string right)
 {
+    // ช่องละตัวอักษร a-z: ข้อความซ้ายบวก ข้อความขวาลบ
     var difference = new int[26];
     foreach (char ch in left)  difference[ch - 'a']++;
     foreach (char ch in right) difference[ch - 'a']--;
+    // ส่วนต่างแต่ละช่องคือจำนวนที่ต้องลบ ไม่ว่าเกินฝั่งไหน
     return difference.Sum(count => Math.Abs(count));
 }
 ```
@@ -1328,9 +1569,13 @@ public static int Deletions(string left, string right)
 
 #### 32. Count Target Segments — ช่วงติดกันที่ผลรวมตรงเป้า
 
-**โจทย์** “Count all non-empty contiguous subarrays whose sum equals the target.” ช่วงยาวเท่าไรก็ได้ มีทั้งจำนวนบวก ศูนย์ และลบ นับช่วงที่เริ่มหรือจบคนละตำแหน่งเป็นคนละคำตอบ `n ≤ 100,000` ค่าแต่ละตัวและเป้ามีค่าสัมบูรณ์ไม่เกินหนึ่งพันล้าน
+**โจทย์** นับช่วงติดกันทุกความยาวที่ผลรวมเท่ากับ `target`
 
-**ฟังก์ชัน** `long CountTargetSegments(int[] numbers, long target)` ตัวอย่าง `[1,-1,1], target=1 → 3` ได้แก่สมาชิกตำแหน่ง 0 ตัวเดียว ตำแหน่ง 2 ตัวเดียว และทั้งช่วงตำแหน่ง 0–2
+- **รับ:** `numbers` (มีทั้งบวก ศูนย์ และลบ · ยาวไม่เกิน 100,000 ตัว · แต่ละค่าและ `target` อยู่ในช่วง ±1,000,000,000) และ `target`
+- **ต้องคืน:** `long` จำนวนช่วง (ช่วงที่เริ่มหรือจบต่างตำแหน่งนับเป็นคนละช่วง · ช่วงว่างไม่นับ)
+- **ตัวอย่าง:** `[1,-1,1], target=1` → `3` (`[1]` ตัวแรก, `[1]` ตัวท้าย, และ `[1,-1,1]` ทั้งก้อน)
+- **ฟังก์ชัน:** `long CountTargetSegments(int[] numbers, long target)`
+- **ในข้อสอบเขียนว่า:** “Count all non-empty contiguous subarrays whose sum equals the target.”
 
 #### เฉลย 32 · จำยอดสะสมเพื่อหาจุดเริ่มของช่วง
 
@@ -1339,13 +1584,16 @@ public static int Deletions(string left, string right)
 ```csharp
 public static long CountTargetSegments(int[] numbers, long target)
 {
+    // ยอดสะสม -> จำนวนครั้งที่เคยเจอ · เริ่มด้วยยอด 0 หนึ่งครั้ง
     var frequencies = new Dictionary<long, int> { [0] = 1 };
     long sum = 0, matches = 0;
     foreach (int number in numbers)
     {
         sum += number;
+        // เคยเจอยอด sum - target กี่ครั้ง = มีช่วงที่จบตรงนี้และรวมได้ target กี่ช่วง
         if (frequencies.TryGetValue(sum - target, out int starts))
             matches += starts;
+        // บันทึกยอดปัจจุบันหลังค้นเสร็จ
         frequencies.TryGetValue(sum, out int seen);
         frequencies[sum] = seen + 1;
     }
@@ -1365,9 +1613,14 @@ public static long CountTargetSegments(int[] numbers, long target)
 
 #### 33. Average Review Score — เรียก API ที่มีคะแนนซ้อนใน JSON
 
-**โจทย์** รับ URL เริ่มต้นที่ยังไม่มี query string กับชื่อเมือง เรียก `?city=<เมือง>&page=<หน้า>` เริ่มที่หน้า 1 เซิร์ฟเวอร์กรองเมืองให้แล้ว คืนค่าเฉลี่ยเลขคณิตของคะแนนร้านที่มีคะแนนจริงจากทุกหน้า ปัดเป็นทศนิยมสองตำแหน่งโดยค่ากึ่งกลางปัดออกจากศูนย์ คะแนนเป็นตัวเลข 0–5 อาจไม่มี `review` หรือ `score` หรือเป็น null ถ้าไม่มีคะแนนเลยคืน `0m`
+**โจทย์** เรียก API ทุกหน้าของเมืองที่กำหนด แล้วหาค่าเฉลี่ยคะแนนรีวิว
 
-**ฟังก์ชัน** `Task<decimal> AverageScore(string endpoint, string city)` สำหรับ `city = "A&B"` API จำลองตอบดังนี้
+- **รับ:** `endpoint` (ยังไม่มี `?`) และ `city` · เรียก `endpoint?city=<เมือง>&page=<หน้า>` เริ่มที่หน้า 1 · เซิร์ฟเวอร์กรองเมืองให้แล้ว
+- **ต้องคืน:** `decimal` ค่าเฉลี่ยคะแนนของทุกร้านที่ **มีคะแนน** จากทุกหน้า ปัดทศนิยม 2 ตำแหน่ง (ครึ่งปัดขึ้น) · ไม่มีคะแนนเลยคืน `0`
+- **กติกา:** ร้านที่ไม่มี `review`, มี `review` เป็น `null` หรือไม่มี `score` ให้ข้าม · คะแนน `0` เป็นคะแนนจริง ต้องนับด้วย
+- **ฟังก์ชัน:** `Task<decimal> AverageScore(string endpoint, string city)`
+
+**ข้อมูลตัวอย่าง** สำหรับ `city = "A&B"` API จำลองตอบดังนี้
 
 ```json
 {"page":1,"total_pages":2,"data":[{"review":{"score":4.5}},{"review":null},{}]}
@@ -1391,6 +1644,7 @@ public static async Task<decimal> AverageScore(string endpoint, string city)
     decimal sum = 0;
     long count = 0;
     int page = 1, pages;
+    // A&B -> A%26B ให้ & เป็นส่วนหนึ่งของชื่อเมือง
     string encoded = Uri.EscapeDataString(city);
     do
     {
@@ -1398,9 +1652,11 @@ public static async Task<decimal> AverageScore(string endpoint, string city)
         string json = await Client.GetStringAsync(url);
         using var doc = JsonDocument.Parse(json);
         var root = doc.RootElement;
+        // จำนวนหน้าทั้งหมด
         pages = root.GetProperty("total_pages").GetInt32();
         foreach (var shop in root.GetProperty("data").EnumerateArray())
         {
+            // นับเฉพาะเมื่อ review เป็น object และ score เป็นตัวเลข (0 ก็นับ)
             if (shop.TryGetProperty("review", out var review) &&
                 review.ValueKind == JsonValueKind.Object &&
                 review.TryGetProperty("score", out var score) &&
@@ -1413,7 +1669,9 @@ public static async Task<decimal> AverageScore(string endpoint, string city)
         page++;
     } while (page <= pages);
 
+    // ไม่มีคะแนนเลย
     if (count == 0) return 0m;
+    // หารผลรวมทั้งหมดครั้งเดียว แล้วปัด 2 ตำแหน่ง
     return Math.Round(sum / count, 2, MidpointRounding.AwayFromZero);
 }
 ```
@@ -1430,7 +1688,12 @@ public static async Task<decimal> AverageScore(string endpoint, string city)
 
 #### 34. Net Receipts — รายงานยอดรับสุทธิเมื่อบิลหนึ่งมีหลายแถว
 
-**โจทย์** ตาราง `Bills(id)`, `Payments(id,bill_id,amount)` และ `Refunds(id,bill_id,amount)` เก็บยอดที่ชำระและยอดที่คืนสำเร็จแล้ว ทุก amount มีค่าและเป็นบวก คืน `bill_id, paid, refunded, net` สำหรับทุกบิล เรียงตามรหัส เมื่อไม่มีรายการให้แสดงศูนย์
+**โจทย์** ทำรายงานเงินของทุกบิลว่า จ่ายเท่าไร คืนเท่าไร และเหลือสุทธิเท่าไร
+
+- **ตาราง:** `Bills(id)` · `Payments(id,bill_id,amount)` ยอดที่จ่าย · `Refunds(id,bill_id,amount)` ยอดที่คืน · บิลหนึ่งมีได้หลายแถวในแต่ละตาราง · amount เป็นบวกเสมอ
+- **ต้องแสดง:** `bill_id, paid, refunded, net` (`net = paid - refunded`) ของ **ทุกบิล** · บิลที่ไม่มีรายการให้แสดง 0
+- **เรียง:** ตามรหัสบิล
+- **ผลที่ต้องได้:** ดูตาราง Expected Output ด้านล่าง
 
 ```text
 Bills      101, 102, 103
@@ -1450,9 +1713,11 @@ Expected Output
 **คำตอบสั้น** ทำ Payments และ Refunds ให้เหลือฝั่งละหนึ่งแถวต่อบิลก่อน แล้วใช้ `LEFT JOIN` จาก Bills เพื่อเก็บบิลว่างด้วย
 
 ```sql
+-- รวมยอดจ่ายให้เหลือบิลละหนึ่งแถวก่อน
 WITH paid AS (
     SELECT bill_id, SUM(amount) AS total FROM Payments GROUP BY bill_id
 ),
+-- รวมยอดคืนให้เหลือบิลละหนึ่งแถว
 refunded AS (
     SELECT bill_id, SUM(amount) AS total FROM Refunds GROUP BY bill_id
 )
@@ -1460,6 +1725,7 @@ SELECT b.id AS bill_id,
        COALESCE(p.total, 0) AS paid,
        COALESCE(r.total, 0) AS refunded,
        COALESCE(p.total, 0) - COALESCE(r.total, 0) AS net
+-- เริ่มจาก Bills เพื่อเก็บบิลที่ไม่มีรายการด้วย
 FROM Bills AS b
 LEFT JOIN paid AS p ON p.bill_id = b.id
 LEFT JOIN refunded AS r ON r.bill_id = b.id
@@ -1513,9 +1779,12 @@ ORDER BY b.id;
 **ตัวอย่างอ่าน input ของข้อ 1 เมื่อเขาให้เขียน Main เอง** นำสามบรรทัดนี้ใส่ใน Main ของคลาสเดียวกับ `reverseArray` เครื่องหมาย `!` หลัง ReadLine บอก compiler ว่าโจทย์รับประกันว่ามีบรรทัดนี้ ตัวแปร `n` คือจำนวนสมาชิกตามสัญญาของโจทย์
 
 ```csharp
+// บรรทัดแรก: จำนวนสมาชิก
 int n = int.Parse(Console.ReadLine()!);
+// บรรทัดสอง: แยกด้วยช่องว่าง แล้วแปลงเป็น int
 var a = Console.ReadLine()!.Split(' ', StringSplitOptions.RemoveEmptyEntries)
     .Select(int.Parse).ToList();
+// พิมพ์ผลคั่นด้วยช่องว่าง
 Console.WriteLine(string.Join(" ", reverseArray(a)));
 ```
 
@@ -1555,6 +1824,7 @@ public record TicketEvent(int TicketId, int Minute, int EventId, string Status);
 public static List<(int Id, string Status)> LatestStatuses(List<TicketEvent> events)
 {
     return events.GroupBy(e => e.TicketId)
+        // ใน ticket เดียวกัน: นาทีมากก่อน เสมอเอา EventId มากก่อน แล้วหยิบตัวแรก
         .Select(group => group.OrderByDescending(e => e.Minute)
                               .ThenByDescending(e => e.EventId)
                               .First())
@@ -1572,6 +1842,7 @@ public static List<(int Id, string Status)> LatestStatuses(List<TicketEvent> eve
 public static List<(int Id, int Count)> EventCounts(
     List<int> ticketIds, List<TicketEvent> events)
 {
+    // เริ่มจากรหัสทุกตัว ticket ที่ไม่มีเหตุการณ์จึงได้ 0
     return ticketIds.GroupJoin(events,
         id => id,
         e => e.TicketId,
@@ -1616,10 +1887,12 @@ public static List<(string Department, string Winner)> DepartmentWinners(
     List<EmployeeScore> employees)
 {
     return employees
+        // แยกตามแผนก แล้วเรียงชื่อแผนก
         .GroupBy(e => e.Department)
         .OrderBy(group => group.Key, StringComparer.Ordinal)
         .Select(group =>
         {
+            // ในแผนกเดียว: คะแนนมากก่อน เสมอเอาชื่อที่มาก่อน
             var winner = group.OrderByDescending(e => e.Score)
                               .ThenBy(e => e.Name, StringComparer.Ordinal)
                               .First();
